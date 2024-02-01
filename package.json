@@ -1,0 +1,55 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@wangeditor/editor-for-react": "^1.0.6",
+    "ahooks": "^3.7.8",
+    "d3": "^7.8.5",
+    "echarts": "^5.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "ml5": "^0.12.2",
+    "p5": "^1.9.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-markdown": "^9.0.1",
+    "react-router-dom": "^6.21.1",
+    "react-scripts": "5.0.1",
+    "remark-gfm": "^4.0.0",
+    "socket.io-client": "^4.7.2",
+    "web-vitals": "^2.1.4",
+    "zustand": "^4.5.0"
+  },
+  "devDependencies": {
+    "@craco/craco": "^7.1.0",
+    "@tailwindcss/forms": "^0.5.7",
+    "@tailwindcss/typography": "^0.5.10",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.4.0"
+  },
+  "scripts": {
+    "dev": "set PORT=6868 && craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
