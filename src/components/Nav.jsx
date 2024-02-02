@@ -1,14 +1,11 @@
-
-
-// import LoginDialogButton from './LogoutButton'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import userStore from '../store/user'
+import userStore from '../store/user';
 import domainStore from '../store/domain';
 
 const NavItem = ({ onClick, active = false, alignRight, children }) => {
     return (
-        <li onClick={onClick} className={`hover:border-b-2 hover:border-b-blue-400 ${active ? "border-b-2 border-b-red-400" : ""} hover:bg-slate-100 px-4  text-slate-700 rounded-sm flex items-center font-medium cursor-pointer ${alignRight === true ? ' ml-auto' : ""}`}>
+        <li onClick={onClick} className={`border-b-2  hover:border-b-blue-400 ${active ? "border-b-red-400" : "border-b-transparent"} hover:bg-slate-100 px-4  text-slate-700 rounded-sm flex items-center font-medium cursor-pointer ${alignRight === true ? ' ml-auto' : ""}`}>
             {children}
         </li>
     )
@@ -40,7 +37,6 @@ const Nav = ({ }) => {
     const { id: domainID } = domainStore();
     const { id: userID, username } = userStore();
     const [activeIdx, setActiveIdx] = useState(0);
-    console.log(domainID);
     // const routes = (path) => {
     //     if (domainID == undefined) {
     //         return `/${domainID}/${path}`;
@@ -66,10 +62,10 @@ const Nav = ({ }) => {
         <nav className='flex w-full justify-center bg-white rounded-sm shadow-md'>
             <div className="flex w-3/5 items-center">
                 <ul className='flex h-full w-full'>
-                    <NavItem onClick={handleNavigate.bind(null, `/`)}>
+                    <NavItem onClick={handleNavigate.bind(null, `/`, 0)}>
                         <img
                             src="/logo.png"
-                            className='w-10 aspect-square'
+                            className='w-10 aspect-square '
                             alt="Picture of the author"
                         />
                     </NavItem>
@@ -80,6 +76,7 @@ const Nav = ({ }) => {
                         ['测验', handleNavigate.bind(null, `/contests`)],
                         ['排名', handleNavigate.bind(null, `/rank`)],
                         ['评测记录', handleNavigate.bind(null, `/status`)],
+                        ['讨论', handleNavigate.bind(null, '/discussions')],
                         ['管理当前域', handleNavigate.bind(null, '/manage/domain')],
                     ].map(([title, handleClick, need_prev], idx) => (
                         <NavItem active={activeIdx === idx} onClick={handleClick.bind(null, idx)} key={idx}>{title}</NavItem>

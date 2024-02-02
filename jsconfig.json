@@ -1,9 +1,9 @@
 {
     "compilerOptions": {
-        "baseUrl": "./",
+        "baseUrl": "./src",
         "paths": {
             "@/*": [
-                "src/*"
+                "*"
             ]
         },
         "target": "esnext",
@@ -12,9 +12,11 @@
     },
     "include": [
         "src/**/*.js",
-        "src/**/*.jsx"
+        "src/**/*.jsx",
+        "bak/NewTable.jsx",
+        "bak/Table.jsx"
     ],
     "exclude": [
-        "node_modules"
+        "node_modules/"
     ]
 }

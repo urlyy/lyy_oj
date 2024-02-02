@@ -1,20 +1,23 @@
+import { useNavigate } from 'react-router-dom'
+
 const QuestionTable = ({ data = [] }) => {
+    const navigate = useNavigate();
     return (
         <div className="grid grid-cols-4 border-l border-r border-t">
-            <div className="border-b p-1">题目编号</div>
-            <div className="border-b p-1">题目</div>
-            <div className="border-b p-1 text-center">AC/尝试</div>
-            <div className="border-b p-1 text-center">难度</div>
-
-            <div className="border-b  p-1">1</div>
-            <div className="border-b  p-1">第一个题目</div>
-            <div className="border-b  p-1 text-center">1/2</div>
-            <div className="border-b  p-1 text-center">EASY</div>
-
-            <div className="border-b  p-1">2</div>
-            <div className="border-b  p-1">第二个题目</div>
-            <div className="border-b  p-1 text-center">0/0</div>
-            <div className="border-b  p-1 text-center">HARD</div>
+            <div className="col-span-4  border-b grid grid-cols-4">
+                <div className="p-1">序号</div>
+                <div className="p-1">题目</div>
+                <div className="p-1 text-center">AC/尝试</div>
+                <div className="p-1 text-center">难度</div>
+            </div>
+            {data.map((datum, idx) => (
+                <div key={idx} className="col-span-4 border-b grid grid-cols-4">
+                    <div className="p-1">{idx + 1}</div>
+                    <div onClick={() => { navigate(`/problem/${datum.id}`) }} className="hover:text-blue-400 cursor-pointer p-1">{datum.name}</div>
+                    <div className="p-1 text-center">{datum.ac}/{datum.submit}</div>
+                    <div className="p-1 text-center">{datum.diff}</div>
+                </div>
+            ))}
         </div>
     )
 }

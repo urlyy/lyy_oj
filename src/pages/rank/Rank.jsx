@@ -12,8 +12,13 @@ const Filter = ({ onClick }) => {
         username_uid: "",
         group: "",
     })
+    const RightHeader = () => {
+        return (
+            <button className="border p-1 rounded-md text-white bg-blue-400 hover:bg-blue-500">过滤</button>
+        )
+    }
     return (
-        <Card title={"过滤"}>
+        <Card title={"过滤"} rightHeader={<RightHeader />}>
             <div className="flex gap-5">
                 <label className="flex-1">
                     <div>按用户名或UID</div>
@@ -45,7 +50,7 @@ const Rank = () => {
         setRankData(data);
     }, [])
     return (
-        <div className="flex flex-1 flex-col">
+        <div className="flex w-3/5 h-full flex-col">
             <Filter />
             <RankTable data={rankData} />
             <Pagination current={curPage} pageNum={pageNum} />

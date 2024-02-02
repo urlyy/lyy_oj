@@ -1,4 +1,5 @@
-const HomeworkList = ({ data = [], onClick = () => { } }) => {
+const HomeworkList = ({ data = [], onClick }) => {
+
     const computeStatusColor = (finished, expire) => {
         if (finished) {
             return "bg-green-200 hover:bg-green-300";
@@ -20,7 +21,7 @@ const HomeworkList = ({ data = [], onClick = () => { } }) => {
     return (
         <div>
             {data.map((homework, idx) => (
-                <div key={idx} onClick={onClick} className={`rounded-md  p-2 ${computeStatusColor(homework.finished, false)} cursor-pointer flex justify-between items-center h-24 gap-2 border-b border-b-slate-200`}>
+                <div key={idx} onClick={onClick.bind(null, homework.id)} className={`rounded-md  p-2 ${computeStatusColor(homework.finished, false)} cursor-pointer flex justify-between items-center h-24 gap-2 border-b border-b-slate-200`}>
                     <div className="flex flex-col justify-between gap-2">
                         <div className="text-xl">{homework.name}</div>
                         <div>{homework.startTime} ~ {homework.endTime}</div>

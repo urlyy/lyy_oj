@@ -3,6 +3,16 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 
+# React Codemirror
+[https://uiwjs.github.io/react-codemirror/](https://uiwjs.github.io/react-codemirror/)
+
+
+# Sweet Alert
+[https://sweetalert2.github.io/#declarative-templates](https://sweetalert2.github.io/#declarative-templates)
+
+# react-toastify
+[https://fkhadra.github.io/react-toastify/introduction/](https://fkhadra.github.io/react-toastify/introduction/)
+
 # 权限模型
 - 一个用户拥有多个角色(在不同的域有不同的角色，但每个用户在每个域只能有一个角色)
 - 所有域的权限统一，设为acl

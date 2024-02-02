@@ -32,11 +32,11 @@ const Filter = ({ onClick }) => {
                 </label>
                 <label className="flex-1">
                     <div>按语言</div>
-                    <Select />
+                    <Select className={`w-full`} />
                 </label>
                 <label className="flex-1">
                     <div>按状态</div>
-                    <Select />
+                    <Select className={`w-full`} />
                 </label>
             </div>
         </Card>
@@ -55,8 +55,14 @@ const Status = () => {
         ]
         const data = [
             {
-                id: 1, problemName: "第一个题目", submitter: { id: 1, name: "刘宇阳" },
-                spendTime: "5ms", spendMemory: "376kb", lang: "C++"
+                id: 1, problemName: "第一个题目", submitterID: 1, submitterName: "刘宇阳",
+                spendTime: "5ms", spendMemory: "376kb", lang: "C++", submitTime: "2023-10-12 10:00",
+                status: "Accepted"
+            },
+            {
+                id: 2, problemName: "第二个题目", submitterID: 1, submitterName: "刘宇阳",
+                spendTime: "5ms", spendMemory: "376kb", lang: "C++", submitTime: "2023-11-12 14:00",
+                status: "80 Wrong"
             },
 
         ]
@@ -64,7 +70,7 @@ const Status = () => {
         setStatusData(data);
     }, [])
     return (
-        <div className="flex flex-1 flex-col">
+        <div className="flex w-3/5 h-full flex-col">
             <Filter />
             <StatusTable data={statusData} />
             <Pagination current={curPage} pageNum={pageNum} />

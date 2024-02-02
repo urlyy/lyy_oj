@@ -14,8 +14,8 @@ const Profile = () => {
         setCurPassPage(newPageNum)
     }
     return (
-        <div className='flex-1 bg-yellow-200 flex gap-3'>
-            <div className='w-1/4 bg-red-200 h-full flex gap-2 flex-col p-1'>
+        <div className='w-3/5 h-full flex gap-1'>
+            <div className='w-1/4 h-full flex gap-2 flex-col p-2 border shadow-lg rounded-md'>
                 <div className='flex gap-2'>
                     <div>
                         <img className='w-24 h-24 rounded-xl' src={'https://assets.leetcode.cn/aliyun-lc-upload/users/zui-shang-chuan-k/avatar_1609037031.png?x-oss-process=image%2Fformat%2Cwebp'} />
@@ -36,8 +36,8 @@ const Profile = () => {
                     <div><a href="https://urlyy.github.io/">https://urlyy.github.io/</a></div>
                 </div>
             </div>
-            <div className='w-3/4 bg-blue-300 h-full flex gap-3'>
-                <div className='w-2/3 bg-sky-500 h-full p-2 flex flex-col gap-2'>
+            <div className='w-3/4 h-full flex gap-3 border shadow-lg rounded-md'>
+                <div className='w-2/3 h-full p-2 flex flex-col gap-2'>
                     <div className='flex  items-center gap-2'>
                         <div>已通过题目</div>
                         <div className='group'>
@@ -66,7 +66,7 @@ const Profile = () => {
                     </div>
                     <Pagination current={curPassPage} pageNum={20} onChange={handleChangePage}></Pagination>
                 </div>
-                <div className='w-1/3 bg-purple-600 h-full'>
+                <div className='w-1/3 h-full'>
                     <PieChart />
                     <div className='px-10'>
                         <div className='flex justify-between'>
