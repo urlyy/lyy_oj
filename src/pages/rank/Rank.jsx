@@ -50,7 +50,7 @@ const Rank = () => {
         setRankData(data);
     }, [])
     return (
-        <div className="flex w-3/5 h-full flex-col">
+        <div className="flex w-3/5 h-full flex-col animate__slideInBottom">
             <Filter />
             <RankTable data={rankData} />
             <Pagination current={curPage} pageNum={pageNum} />

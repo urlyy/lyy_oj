@@ -9,17 +9,25 @@ if (domainStr) {
 
 const domainStore = create(set => ({
     id: domain ? domain.id : null,
-    name: domain ? domain.username : null,
-
-    set: (domain) => set(state => ({
-        id: domain.id,
-        name: domain.name
-    })),
+    name: domain ? domain.name : null,
+    announce: domain ? domain.announce : null,
+    set: (domain) => set(state => {
+        localStorage.setItem("domain", JSON.stringify(domain));
+        return ({
+            id: domain.id,
+            name: domain.name,
+            announce: domain.announce,
+        })
+    }),
     setName: (newName) => set(prev => ({ ...prev, name: newName })),
-    clear: () => set(state => ({
-        id: null,
-        name: null,
-    }))
+    clear: () => set(state => {
+        localStorage.removeItem("domain");
+        return ({
+            id: null,
+            name: null,
+            announce: null,
+        })
+    }),
 }))
 
 

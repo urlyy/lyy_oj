@@ -4,9 +4,12 @@ import { useState, useEffect, useRef } from "react";
 import { useParams } from 'react-router-dom'
 import api from "./api";
 import copy from 'copy-to-clipboard';
+import domainStore from "@/store/domain";
 // import Swal from 'sweetalert2'
 import toast from '../../components/Toast'
 import { useNavigate } from "../../../node_modules/react-router-dom/dist/index";
+import RichTextEditor from "@/components/RichTextEditor";
+import { diff2text, memoryLimit2text, timeLimit2text } from "@/utils/data2text";
 
 
 
@@ -25,7 +28,7 @@ const EditorArea = ({ problemID, onSubmit }) => {
                 <button className="w-20 bg-green-500 text-white border rounded-md p-1 hover:bg-green-600" onClick={handleTest}>提交</button>
             </div>
             <div className="flex-1">
-                <CodeEditor code={code} editable={true} onChange={setCode} />
+                <CodeEditor code={code} readonly={true} onChange={setCode} />
             </div>
         </div>
     )
@@ -33,26 +36,38 @@ const EditorArea = ({ problemID, onSubmit }) => {
 
 
 
-
+const Header = ({ children }) => {
+    return (
+        <h2 className="text-2xl mb-2">{children}</h2>
+    )
+}
 
 const ProblemDetail = ({ onExpand, expand }) => {
-    const [problem, setProblem] = useState({});
+    const [problem, setProblem] = useState({ title: "标题" });
     const navigate = useNavigate();
+    const { id: domainID } = domainStore();
+    const { problemID } = useParams();
     useEffect(() => {
-        const data = {
-            id: 10,
-            title: '一个题目',
-            description: "哈哈哈哈哈哈哈",
-            inputFormat: '这个是输入格式',
-            outputFormat: '这个是输出格式',
-            samples: [
-                { input: "1 2 \n3 4\n5 6", output: '3\n7' },
-                { input: "1 2 3 4", output: '3\n7\n11' },
+        api.getProblem(domainID, problemID).then(res => {
+            if (res.success) {
+                const problem = res.data.problem;
+                setProblem(problem);
+            }
+        })
+        // const data = {
+        //     id: 10,
+        //     title: '一个题目',
+        //     description: "哈哈哈哈哈哈哈",
+        //     inputFormat: '这个是输入格式',
+        //     outputFormat: '这个是输出格式',
+        //     samples: [
+        //         { input: "1 2 \n3 4\n5 6", output: '3\n7' },
+        //         { input: "1 2 3 4", output: '3\n7\n11' },
 
-            ],
-            other: '这是放额外文本的地方',
-        }
-        setProblem(data);
+        //     ],
+        //     other: '这是放额外文本的地方',
+        // }
+        // setProblem(data);
     }, [])
     const Textarea = ({ value }) => {
         const textareaRef = useRef(null);
@@ -60,23 +75,24 @@ const ProblemDetail = ({ onExpand, expand }) => {
             if (textareaRef.current) {
                 textareaRef.current.style.height = 'auto';
                 textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+                textareaRef.current.style.overflow = 'hidden';
             }
         }, [value])
         return (
             <div className="relative w-full">
-                <textarea ref={textareaRef} rows={1} className="overflow-hidden w-full resize-none p-1 bg-white border" disabled={true} value={value} />
+                <textarea ref={textareaRef} rows={1} className="w-full resize-none p-1 bg-white border" disabled={true} value={value} />
                 <button onClick={() => { copy(value); toast("success", "复制成功") }} className="absolute right-0 top-0 border bg-slate-100 hover:bg-slate-200">复制</button>
             </div>
         )
     }
     const Tag = ({ children }) => {
         return (
-            <div className="p-1 bg-blue-400  text-white border rounded-md">{children}</div>
+            <div className="p-1 bg-blue-400  text-white border rounded-md text-sm">{children}</div>
         )
     }
     return (
-        <div className="w-full h-full flex gap-3 flex-col pl-5 pr-5 relative">
-            <button onClick={() => { navigate(`/problem/edit/${problem.id}`) }} className="absolute left-1 top-1 z-50">
+        <div className="w-full h-full flex flex-col pl-5 pr-5 relative">
+            <button onClick={() => { navigate(`/problem/edit/${problemID}`) }} className="absolute left-1 top-1 z-50">
                 编辑
             </button>
             <button onClick={onExpand} className="absolute right-1 top-1 z-50">
@@ -84,41 +100,43 @@ const ProblemDetail = ({ onExpand, expand }) => {
             </button>
             <h1 className="text-center text-3xl">{problem.title}</h1>
             <div className="flex gap-2">
-                <Tag>ID:{10}</Tag>
-                <Tag>时间限制:{"1s"}</Tag>
-                <Tag>内存限制:{"1MB"}</Tag>
-                <Tag>Easy</Tag>
+                <Tag>ID:{problem.id}</Tag>
+                <Tag>时间限制:{timeLimit2text(problem.timeLimit)}</Tag>
+                <Tag>内存限制:{memoryLimit2text(problem.memoryLimit)}</Tag>
+                <Tag>{diff2text(problem.diff)}</Tag>
             </div>
-            <div>
-                <h2 className="text-2xl mb-2">题目描述</h2>
-                <div>{problem.description}</div>
-            </div>
-            <div>
-                <h2 className="text-2xl mb-2">输入格式</h2>
-                <div>{problem.inputFormat}</div>
-            </div>
-            <div>
-                <h2 className="text-2xl mb-2">输出格式</h2>
-                <div>{problem.outputFormat}</div>
-            </div>
-            <div>
-                <h2 className="text-2xl mb-2">测试用例</h2>
-                {problem.samples && problem.samples.map((sample, idx) => (
-                    <div key={idx} className="flex gap-2">
-                        <div className="w-1/2" >
-                            <div className="text-lg">Input#{idx + 1}</div>
-                            <Textarea value={sample.input} />
+            <div className="flex flex-col gap-6 flex-1">
+                <div>
+                    <Header>题目描述</Header>
+                    {problem && problem.desc && <RichTextEditor readonly={true} value={problem.desc} />}
+                </div>
+                <div>
+                    <Header>输入格式</Header>
+                    {problem && problem.inputFormat && <RichTextEditor readonly={true} value={problem.inputFormat} />}
+                </div>
+                <div>
+                    <Header>输出格式</Header>
+                    {problem && problem.outputFormat && <RichTextEditor readonly={true} value={problem.outputFormat} />}
+                </div>
+                <div>
+                    <Header>测试用例</Header>
+                    {problem.samples && problem.samples.map((sample, idx) => (
+                        <div key={idx} className="flex gap-2">
+                            <div className="w-1/2" >
+                                <div className="text-lg">Input#{idx + 1}</div>
+                                <Textarea value={sample.input} />
+                            </div>
+                            <div className="w-1/2">
+                                <div className="text-lg">Output#{idx + 1}</div>
+                                <Textarea value={sample.output} />
+                            </div>
                         </div>
-                        <div className="w-1/2">
-                            <div className="text-lg">Output#{idx + 1}</div>
-                            <Textarea value={sample.output} />
-                        </div>
-                    </div>
-                ))}
-            </div>
-            <div className="mt-auto mb-3">
-                <h2 className="text-2xl  mb-2">其他</h2>
-                <div>{problem.other}</div>
+                    ))}
+                </div>
+                <div className="mt-auto mb-3">
+                    <h2 className="text-2xl  mb-2">其他</h2>
+                    {problem && problem.other && <RichTextEditor readonly={true} value={problem.other} />}
+                </div>
             </div>
         </div>
     )
@@ -162,7 +180,7 @@ const Problem = () => {
 
     return (
         <div className="flex w-full h-full gap-1 pl-1 pr-1 justify-center">
-            <div className="w-1/2 h-full  border border-slate-200 rounded-md shadow-md">
+            <div className={`${expand ? "w-1/2" : "w-2/5"} h-full  border border-slate-200 rounded-md shadow-md`}>
                 <ProblemDetail expand={expand} onExpand={() => { setExpand(prev => !prev) }} />
             </div>
             {expand && <div className="w-1/2 h-full border-slate-200  border rounded-md shadow-md">

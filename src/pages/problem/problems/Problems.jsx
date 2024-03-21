@@ -5,6 +5,10 @@ import Input from "@/components/Input";
 import Select from "@/components/Select";
 import Card from "@/components/Card";
 import { useNavigate } from "react-router-dom";
+import api from '../api'
+import domainStore from "@/store/domain";
+
+
 const Filter = ({ onClick }) => {
     const navigate = useNavigate();
     const [cond, setCond] = useState({
@@ -42,39 +46,30 @@ const Problems = () => {
     const [problems, setProblems] = useState([]);
     const [curPage, setCurPage] = useState(1);
     const [pageNum, setPageNum] = useState(1);
-    useEffect(() => {
-        let data = [
-            { id: 1, name: "第一个题目", submit: 10, ac: 5, diff: 0 },
-            { id: 2, name: "第二个题目", submit: 30, ac: 10, diff: 1 }
-        ]
-        const computeDiff = (diff) => {
-            if (diff === 0) {
-                return "Easy"
-            } else if (diff === 1) {
-                return "Medium"
-            } else if (diff === 2) {
-                return "Hard";
+    const { id: domainID } = domainStore();
+    const handleGetProblems = (newPage) => {
+        setCurPage(newPage);
+        api.getProblems(domainID, curPage).then(res => {
+            if (res.success) {
+                const problems = res.data.problems;
+                setProblems(problems);
             }
-        }
-        data = data.map(item => ({
-            ...item, diff: computeDiff(item.diff)
-        }))
-        setProblems(data);
-
+        })
+    }
+    useEffect(() => {
+        handleGetProblems(1);
     }, [])
     return (
-        <div className="flex h-full w-3/5 justify-center">
+        <div className="flex h-full w-3/5 justify-center animate__slideInBottom">
             <div className="h-full w-full">
                 <Filter />
                 {/* <div className="border">
                     <Pagination current={curPage} pageNum={pageNum} />
                 </div> */}
-
-
                 <QuestionTable data={problems} />
 
                 <div className="border">
-                    <Pagination current={curPage} pageNum={pageNum} />
+                    <Pagination onChange={setCurPage} current={curPage} pageNum={pageNum} />
                 </div>
             </div >
         </div>

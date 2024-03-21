@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { diff2text } from '@/utils/data2text';
 
 const QuestionTable = ({ data = [] }) => {
     const navigate = useNavigate();
@@ -13,9 +14,10 @@ const QuestionTable = ({ data = [] }) => {
             {data.map((datum, idx) => (
                 <div key={idx} className="col-span-4 border-b grid grid-cols-4">
                     <div className="p-1">{idx + 1}</div>
-                    <div onClick={() => { navigate(`/problem/${datum.id}`) }} className="hover:text-blue-400 cursor-pointer p-1">{datum.name}</div>
+                    <div onClick={() => { navigate(`/problem/${datum.id}`) }} className="hover:text-blue-400 cursor-pointer p-1">{datum.title}</div>
                     <div className="p-1 text-center">{datum.ac}/{datum.submit}</div>
-                    <div className="p-1 text-center">{datum.diff}</div>
+                    {/* <div className="p-1 text-center">{datum.ac}/{datum.submit}</div> */}
+                    <div className="p-1 text-center">{diff2text(datum.diff)}</div>
                 </div>
             ))}
         </div>

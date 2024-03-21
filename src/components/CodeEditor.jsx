@@ -10,7 +10,7 @@ import CodeMirror from '@uiw/react-codemirror';
 // which cause costly re-renders.
 
 
-const CodeEditor = ({ code, editable = true, onChange }) => {
+const CodeEditor = ({ code, readonly = true, onChange }) => {
     const editor = useRef();
     // const extensions = [langs.java(), langs.cpp(), langs.python()];
     const extensions = [langs.cpp()];
@@ -23,7 +23,7 @@ const CodeEditor = ({ code, editable = true, onChange }) => {
         height: "100%",
         onChange: (val) => { onChange(val); },
         placeholder: "在这里写入代码",
-        editable: editable,
+        editable: !readonly,
     });
 
     useEffect(() => {

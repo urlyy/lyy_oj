@@ -2,7 +2,9 @@ import Card from "@/components/Card";
 import { useState, useEffect } from "react";
 import Pagination from "@/components/Pagination";
 import { useNavigate } from "react-router-dom"
-
+import api from "../api";
+import domainStore from "@/store/domain";
+import { dateFormat } from "@/utils/data2text";
 
 const HomeworkList = ({ data = [] }) => {
     const navigate = useNavigate();
@@ -32,11 +34,11 @@ const HomeworkList = ({ data = [] }) => {
             {data.map((homework, idx) => (
                 <div key={idx} onClick={handleClick.bind(null, homework.id)} className={`rounded-md  p-2 ${computeStatusColor(homework.finished, false)} cursor-pointer flex justify-between items-center h-24 gap-2 border-b border-b-slate-200`}>
                     <div className="flex flex-col justify-between gap-2">
-                        <div className="text-xl">{homework.name}</div>
-                        <div>{homework.startTime} ~ {homework.endTime}</div>
+                        <div className="text-xl">{homework.title}</div>
+                        <div>{dateFormat(homework.startTime)} ~ {dateFormat(homework.endTime)}</div>
                     </div>
                     <div>
-                        {computeStatusText(homework.finished, false)}
+                        {/* {computeStatusText(homework.finished, false)} */}
                     </div>
                 </div>
             ))}
@@ -48,22 +50,30 @@ const Homeworks = () => {
     const [homeworks, setHomeworks] = useState([]);
     const [curPage, setCurPage] = useState(1);
     const [pageNum, setPageNum] = useState(1);
+    const navigate = useNavigate();
+    const { id: domainID } = domainStore();
 
+    const handleGetHomeworks = async (newPage) => {
+        setCurPage(newPage);
+        api.getHomeworks(domainID, curPage).then(res => {
+            if (res.success) {
+                const homeworks = res.data.homeworks;
+                setHomeworks(homeworks);
+            }
+        })
+    }
 
     useEffect(() => {
-        const data = [
-            { id: 1, name: "第一次作业", startTime: "2020-01-01 14:00", endTime: "2022-01-01 15:00", finished: false },
-            { id: 2, name: "第二次作业", startTime: "2020-01-01 14:00", endTime: "2022-01-01 15:00", finished: true }
-        ]
-        setHomeworks(data);
+        handleGetHomeworks(1);
+
     }, [])
     const RightHeader = () => {
         return (
-            <button className="border p-1 rounded-md text-white bg-green-500 hover:bg-green-600">新建作业</button>
+            <button onClick={() => { navigate("/homework/edit") }} className="border p-1 rounded-md text-white bg-green-500 hover:bg-green-600">新建作业</button>
         )
     }
     return (
-        <div className="h-full w-3/5 flex justify-center">
+        <div className="h-full w-3/5 flex justify-center animate__slideInBottom">
             <Card className="w-full h-full" title="作业" rightHeader={<RightHeader />}>
                 <HomeworkList data={homeworks} />
                 <Pagination current={curPage} pageNum={pageNum} />

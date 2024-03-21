@@ -9,7 +9,7 @@ const Button = ({ children, onClick = () => { } }) => {
 
 const Security = () => {
     return (
-        <div className="w-3/5 h-full flex gap-2">
+        <div className="w-3/5 h-full flex gap-2 animate__slideInBottom">
             <Card className={"flex flex-1 bg-red-100 gap-2"} title={"修改电子邮箱"}>
                 <label>
                     <div>当前电子邮箱</div>
@@ -25,7 +25,7 @@ const Security = () => {
                 </label>
                 <Button>修改电子邮箱</Button>
             </Card>
-            <Card className={"flex gap-2 flex-1 bg-yellow-100"} title={"修改密码"}>
+            <Card className={"flex gap-2 flex-1"} title={"修改密码"}>
                 <label>
                     <div>当前密码</div>
                     <Input />

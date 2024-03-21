@@ -1,16 +1,18 @@
 import Announcement from './Announcement'
 import Recommend from './Recommend'
 import domainStore from '@/store/domain';
+import api from './api';
+import { useEffect } from 'react';
 
 const Index = () => {
-  const { id: domainID } = domainStore();
+
   return (
-    <div className="gap-5 flex w-3/5 h-full">
+    <div className="gap-5 flex w-3/5 h-full animate__slideInBottom">
       <div className="w-3/4">
-        <Announcement domainID={domainID}></Announcement>
+        <Announcement></Announcement>
       </div>
       <div className="w-1/4">
-        <Recommend domainID={domainID}></Recommend>
+        <Recommend></Recommend>
       </div>
     </div>
   )

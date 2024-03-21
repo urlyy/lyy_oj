@@ -10,31 +10,42 @@ if (userStr) {
 const userStore = create(set => ({
     token: user ? user.token : null,
     id: user ? user.id : null,
+    trueID: user ? user.trueID : null,
+    email: user ? user.email : null,
     username: user ? user.username : null,
-    avatar: user ? user.avatar : null,
     gender: user ? user.gender : null,
-    brief: user ? user.brief : null,
-    role: user ? user.role : null,
+    school: user ? user.school : null,
 
-    logout: () => set(state => ({
-        token: null,
-        id: null,
-        username: null,
-        avatar: null,
-        role: null,
-        gender: null,
-        brief: null,
-    })),
-    setUser: (user) => set(state => ({
-        id: user.id,
-        username: user.username,
-        token: user.token,
-        avatar: user.avatar,
-        role: user.role,
-        gender: user.gender,
-        brief: user.brief,
-    })),
-    setAvatar: (avatar) => set(prev => ({ ...prev, avatar: avatar }))
+    logout: () => {
+        localStorage.removeItem("user");
+        localStorage.removeItem("domain");
+        set(state => ({
+            token: null,
+            id: null,
+            trueID: null,
+            email: null,
+            username: null,
+            gender: null,
+            school: null,
+        }))
+    },
+    set: (user) => {
+        const u = {
+            token: user.token,
+            id: user.id,
+            trueID: user.trueID,
+            email: user.email,
+            username: user.username,
+            gender: user.gender,
+            school: user.school,
+        }
+        localStorage.setItem("user", JSON.stringify(u));
+        set(state => u)
+    },
+    setAvatar: (avatar) => {
+        // localStorage.setItem("user", JSON.stringify(user));
+        // set(prev => ({ ...prev, avatar: avatar }))
+    }
 }))
 
 

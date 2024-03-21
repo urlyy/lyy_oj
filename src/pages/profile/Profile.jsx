@@ -14,12 +14,12 @@ const Profile = () => {
         setCurPassPage(newPageNum)
     }
     return (
-        <div className='w-3/5 h-full flex gap-1'>
+        <div className='w-3/5 h-full flex gap-1 animate__slideInBottom'>
             <div className='w-1/4 h-full flex gap-2 flex-col p-2 border shadow-lg rounded-md'>
                 <div className='flex gap-2'>
-                    <div>
+                    {/* <div>
                         <img className='w-24 h-24 rounded-xl' src={'https://assets.leetcode.cn/aliyun-lc-upload/users/zui-shang-chuan-k/avatar_1609037031.png?x-oss-process=image%2Fformat%2Cwebp'} />
-                    </div>
+                    </div> */}
                     <div className='flex justify-between flex-col'>
                         <div className='font-bold text-2xl'>最上川</div>
                     </div>

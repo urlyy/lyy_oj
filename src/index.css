@@ -7,8 +7,22 @@ input {
   @apply outline-none;
 }
 
+textarea {
+  @apply outline-none;
+}
+
 select {
   @apply outline-none;
+}
+
+
+
+.w-e-text-container [data-slate-editor] {
+  padding: 0 !important;
+}
+
+.w-e-text-container [data-slate-editor] p {
+  margin: 0 !important;
 }
 
 
@@ -19,6 +33,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  @apply overflow-x-hidden
 }
 
 code {

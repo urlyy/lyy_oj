@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import userStore from '../store/user';
 import domainStore from '../store/domain';
+import { VscAccount } from "react-icons/vsc";
+
 
 const NavItem = ({ onClick, active = false, alignRight, children }) => {
     return (
@@ -14,7 +16,7 @@ const NavItem = ({ onClick, active = false, alignRight, children }) => {
 const Dropdown = ({ alignRight, children, title, active }) => {
     return (
         <li className={` ${active ? "border-b-2 border-b-red-400" : ""} z-50 group relative hover:border-b-2 hover:border-b-blue-400  hover:bg-slate-100 px-4  text-slate-700 rounded-sm flex items-center font-medium ${alignRight === true ? ' ml-auto' : ""}`}>
-            <div className='relative cursor-pointer '>{title}</div>
+            <div className='relative cursor-pointer flex items-center gap-1'><VscAccount />{title}</div>
             <ul className={`mt-[2px] invisible group-hover:visible flex flex-col w-28 justify-center absolute right-0 top-full bg-white border border-slate-200`}>
                 {children}
             </ul>
@@ -77,7 +79,7 @@ const Nav = ({ }) => {
                         ['排名', handleNavigate.bind(null, `/rank`)],
                         ['评测记录', handleNavigate.bind(null, `/status`)],
                         ['讨论', handleNavigate.bind(null, '/discussions')],
-                        ['管理当前域', handleNavigate.bind(null, '/manage/domain')],
+                        ['管理当前域', handleNavigate.bind(null, '/admin')],
                     ].map(([title, handleClick, need_prev], idx) => (
                         <NavItem active={activeIdx === idx} onClick={handleClick.bind(null, idx)} key={idx}>{title}</NavItem>
                     ))}

@@ -1,10 +1,8 @@
-const Select = ({ className, entries, selectedValue, onChange }) => {
+const Select = ({ className, entries = [], selectedValue, onChange }) => {
     return (
-        <select className={`border rounded-md ${className}`}>
-            <option>1234</option>
-            <option>1234</option>
+        <select onChange={e => { onChange(e.target.value) }} value={selectedValue} className={`border rounded-md min-h-7 p-1 ${className}`}>
+            {entries.map((entry, idx) => <option key={idx} value={entry[1]}>{entry[0]}</option>)}
         </select>
-
     )
 }
 export default Select;
