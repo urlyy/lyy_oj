@@ -11,7 +11,7 @@ const Domains = () => {
     const logout = userStore(state => state.logout);
     useEffect(() => {
         api.getDomains().then(res => {
-            const domains = res.domains;
+            const domains = res.data.domains;
             setDomains(domains);
         })
     }, []);

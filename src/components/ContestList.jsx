@@ -45,7 +45,6 @@ const ContestList = ({ data = [], onClick }) => {
                         <div className="flex gap-2">
                             <div className={`${computeTypeColor(contest.type)} p-1 rounded-lg`}>{contest.type}</div>
                             <div className="p-1">{computeDuration(contest.startTime, contest.endTime)}</div>
-                            <div className="p-1">{contest.participantNum}人参加</div>
                         </div>
                     </div>
                 </div>

@@ -6,7 +6,7 @@ import RichTextEditor from "@/components/RichTextEditor";
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import domainStore from "@/store/domain";
-import api from "../api";
+import api from "./api";
 
 const Header = ({ children }) => {
     return (
@@ -20,7 +20,6 @@ const DiscussionEdit = () => {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const { discussionID = null } = useParams();
-    const [samples, setSamples] = useState([]);
 
     useEffect(() => {
         if (discussionID !== null) {
@@ -33,23 +32,7 @@ const DiscussionEdit = () => {
             });
         }
     }, [])
-    const handleAddSample = () => {
-        const data = {
-            input: "",
-            output: "",
-        }
-        setSamples(prev => [...prev, data]);
-    }
-    const handleSampleChange = (idx, type, newVal) => {
-        console.log(idx, type, newVal)
-        if (type === "input" || type === "output") {
-            const data = [...samples];
-            data[idx][type] = newVal;
-            setSamples(data);
-        } else {
-            throw new Error("断言异常");
-        }
-    }
+
     const handleSubmit = async () => {
         if (title === "" || content === "") {
             alert("不能为空");

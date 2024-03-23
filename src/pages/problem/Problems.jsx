@@ -1,28 +1,23 @@
-import QuestionTable from "@/components/QuestionTable"
+import ProblemTable from "@/components/ProblemTable"
 import Pagination from "@/components/Pagination";
 import { useState, useEffect } from "react";
 import Input from "@/components/Input";
 import Select from "@/components/Select";
 import Card from "@/components/Card";
 import { useNavigate } from "react-router-dom";
-import api from '../api'
+import api from './api'
 import domainStore from "@/store/domain";
+import { diff2text } from "@/utils/data2text";
 
 
-const Filter = ({ onClick }) => {
+const Filter = ({ onFilter, keyword, onKeywordChange, diff, onDiffChange }) => {
     const navigate = useNavigate();
-    const [cond, setCond] = useState({
-        username_uid: "",
-        problemName_pid: "",
-        contestName_cid: "",
-        lang: "c++",
-        status: 0,
-    })
+
     const RightHeader = () => {
         return (
             <div className="flex gap-2">
                 <button onClick={() => navigate(`/problem/edit`)} className="border p-1 rounded-md text-white bg-green-500 hover:bg-green-600">新增题目</button>
-                <button className="border p-1 rounded-md text-white bg-blue-400 hover:bg-blue-500">过滤</button>
+                <button onClick={() => { onFilter(keyword, diff) }} className="border p-1 rounded-md text-white bg-blue-400 hover:bg-blue-500">过滤</button>
             </div>
         )
     }
@@ -31,11 +26,16 @@ const Filter = ({ onClick }) => {
             <div className="flex gap-5">
                 <label className="flex-1">
                     <div>按题目名或编号</div>
-                    <Input />
+                    <Input value={keyword} onChange={onKeywordChange} />
                 </label>
                 <label className="flex-1">
                     <div>按难度</div>
-                    <Select className={`w-full`} />
+                    <Select entries={[
+                        ["全部", 0],
+                        [diff2text(1), 1],
+                        [diff2text(2), 2],
+                        [diff2text(3), 3],
+                    ]} selectedValue={diff} onChange={onDiffChange} className={`w-full`} />
                 </label>
             </div>
         </Card>
@@ -46,10 +46,13 @@ const Problems = () => {
     const [problems, setProblems] = useState([]);
     const [curPage, setCurPage] = useState(1);
     const [pageNum, setPageNum] = useState(1);
+    const [keyword, setKeyword] = useState("");
+    const [diff, setDiff] = useState(0);
+
     const { id: domainID } = domainStore();
     const handleGetProblems = (newPage) => {
         setCurPage(newPage);
-        api.getProblems(domainID, curPage).then(res => {
+        api.list(domainID, curPage, keyword, diff).then(res => {
             if (res.success) {
                 const problems = res.data.problems;
                 setProblems(problems);
@@ -62,11 +65,8 @@ const Problems = () => {
     return (
         <div className="flex h-full w-3/5 justify-center animate__slideInBottom">
             <div className="h-full w-full">
-                <Filter />
-                {/* <div className="border">
-                    <Pagination current={curPage} pageNum={pageNum} />
-                </div> */}
-                <QuestionTable data={problems} />
+                <Filter onFilter={() => handleGetProblems(curPage)} keyword={keyword} diff={diff} onDiffChange={setDiff} onKeywordChange={setKeyword} />
+                <ProblemTable data={problems} />
 
                 <div className="border">
                     <Pagination onChange={setCurPage} current={curPage} pageNum={pageNum} />

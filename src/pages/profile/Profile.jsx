@@ -2,13 +2,33 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Pagination from '@/components/Pagination';
 import PieChart from '@/components/PieChart';
+import userStore from '@/store/user';
+import api from './api';
+import { dateFormat, gender2text } from '@/utils/data2text';
 
 const Profile = () => {
+    const { id: myID, username: myUsername } = userStore();
     const navigate = useNavigate();
-    const { userID } = useParams();
+    const { userID = null } = useParams();
     const [curPassPage, setCurPassPage] = useState(1);
+    const [username, setUsername] = useState("");
+    const [school, setSchool] = useState("");
+    const [gender, setGender] = useState(null);
+    const [lastLogin, setLastLogin] = useState(null);
+    const [website, setWebsite] = useState("");
     useEffect(() => {
-        console.log(userID);
+        if (userID !== null) {
+            api.getProfile(userID).then(res => {
+                if (res.success) {
+                    const user = res.data.user;
+                    setUsername(user.username);
+                    setGender(user.gender);
+                    setSchool(user.school);
+                    setLastLogin(user.lastLogin);
+                    setWebsite(user.website);
+                }
+            })
+        }
     })
     const handleChangePage = (newPageNum) => {
         setCurPassPage(newPageNum)
@@ -21,19 +41,21 @@ const Profile = () => {
                         <img className='w-24 h-24 rounded-xl' src={'https://assets.leetcode.cn/aliyun-lc-upload/users/zui-shang-chuan-k/avatar_1609037031.png?x-oss-process=image%2Fformat%2Cwebp'} />
                     </div> */}
                     <div className='flex justify-between flex-col'>
-                        <div className='font-bold text-2xl'>最上川</div>
+                        <div className='font-bold text-2xl'>{username}</div>
+                        <div>上次登录:{dateFormat(lastLogin)}</div>
                     </div>
                 </div>
                 <div>
                     <button onClick={() => { navigate("/profile/edit") }} className='w-full border p-2 rounded-md text-green-700 bg-green-100 hover:bg-green-200'>编辑个人资料</button>
                 </div>
                 <div className='flex flex-col gap-1'>
-                    <h4 className='font-bold text-lg'>个人简介</h4>
-                    <div>无</div>
-                    <div>男</div>
-                    <div>吉首大学</div>
-                    <div><a href="https://github.com/urlyy">urlyy</a></div>
-                    <div><a href="https://urlyy.github.io/">https://urlyy.github.io/</a></div>
+                    <h4 className='font-bold text-lg'>个人资料</h4>
+                    {/* <div>无</div> */}
+                    <div>{gender2text(gender)}</div>
+                    <div>{school}</div>
+
+                    {/* <div><a href="https://github.com/urlyy">urlyy</a></div> */}
+                    <div>个人网站 <a className='text-blue-400' href={website}>{website}</a></div>
                 </div>
             </div>
             <div className='w-3/4 h-full flex gap-3 border shadow-lg rounded-md'>

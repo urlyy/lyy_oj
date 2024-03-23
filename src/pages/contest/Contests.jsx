@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Pagination from "@/components/Pagination";
 import ContestList from "@/components/ContestList";
 import { useNavigate } from "react-router-dom"
-import api from '../api'
+import api from './api'
 import domainStore from "@/store/domain";
 const Contests = () => {
     const { id: domainID } = domainStore();
@@ -11,11 +11,13 @@ const Contests = () => {
     const [curPage, setCurPage] = useState(1);
     const [pageNum, setPageNum] = useState(1);
     const navigate = useNavigate();
+
     const handleGetHomeworks = async (newPage) => {
         setCurPage(newPage);
-        const res = await api.getHomeworks(domainID, newPage);
+        const res = await api.list(domainID, newPage);
         if (res.success) {
             const contests = res.data.contests;
+            console.log(contests);
             setContests(contests);
         }
     }

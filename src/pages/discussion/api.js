@@ -33,5 +33,13 @@ const api = {
         });
         return res;
     },
+    remove: async (domainID, discussionID) => {
+        const res = await request.delete(`/discussion/${discussionID}`, { d: domainID });
+        return res;
+    },
+    removeComment: async (domainID, discussionID, commentID) => {
+        const res = await request.delete(`/discussion/comment/${commentID}`, { d: domainID, discussionID });
+        return res;
+    }
 }
 export default api;

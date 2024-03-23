@@ -2,7 +2,7 @@ import Card from "@/components/Card";
 import { useState, useEffect } from "react";
 import Pagination from "@/components/Pagination";
 import { useNavigate } from "react-router-dom"
-import api from "../api";
+import api from "./api";
 import domainStore from "@/store/domain";
 import { dateFormat } from "@/utils/data2text";
 
@@ -55,7 +55,7 @@ const Homeworks = () => {
 
     const handleGetHomeworks = async (newPage) => {
         setCurPage(newPage);
-        api.getHomeworks(domainID, curPage).then(res => {
+        api.list(domainID, curPage).then(res => {
             if (res.success) {
                 const homeworks = res.data.homeworks;
                 setHomeworks(homeworks);

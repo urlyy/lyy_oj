@@ -2,7 +2,7 @@ import Card from "@/components/Card";
 import { useParams, useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react";
 import Markdown from "@/components/Markdown";
-import api from "../api";
+import api from "./api";
 import domainStore from "@/store/domain";
 import RichTextEditor from "@/components/RichTextEditor";
 import { dateFormat } from "@/utils/data2text";
@@ -10,7 +10,7 @@ import userStore from "@/store/user";
 import Input from "@/components/Input";
 
 
-const CommentItem = ({ discussionID, comment, onPushReply }) => {
+const CommentItem = ({ discussionID, comment, onPushReply, onRemove }) => {
     const { id: domainID } = domainStore();
     const { id: myID, username: myUsername } = userStore();
     const [replies, setReplies] = useState([]);
@@ -22,6 +22,7 @@ const CommentItem = ({ discussionID, comment, onPushReply }) => {
             api.getReply(domainID, discussionID, comment.id).then(res => {
                 if (res.success) {
                     const replies = res.data.replies;
+                    console.log(replies)
                     setReplies(replies);
                 }
             })
@@ -53,13 +54,19 @@ const CommentItem = ({ discussionID, comment, onPushReply }) => {
         }
     }
 
+
     return (
         <div className="flex pt-2 w-full gap-3 border-t">
             <div className="w-full">
                 <div className="min-h-16 w-full">
                     <div className="flex gap-3 justify-between">
                         <div className="flex gap-2">
-                            <div>{comment.creatorUsername}</div>
+                            <span className="cursor-pointer text-blue-400 hover:text-blue-500">{comment.creatorUsername}</span>
+                            {comment.replyUsername !== "" &&
+                                <>
+                                    <span>回复</span>
+                                    <span className="cursor-pointer text-blue-400 hover:text-blue-500">{comment.replyUsername}</span>
+                                </>}
                             <div>{dateFormat(comment.createTime)}</div>
                         </div>
                         <div>
@@ -87,7 +94,7 @@ const CommentItem = ({ discussionID, comment, onPushReply }) => {
     )
 }
 
-const CommentArea = ({ discussionID }) => {
+const CommentArea = ({ discussionID, commentNum }) => {
     const { id: domainID } = domainStore();
     const { id: myID, username: myUsername } = userStore();
     const [comments, setComments] = useState([]);
@@ -98,7 +105,6 @@ const CommentArea = ({ discussionID }) => {
     const handleGetComments = async (newPage) => {
         setCurPage(newPage);
         const res = await api.getComments(domainID, discussionID, curPage);
-        console.log(res);
         if (res.success) {
             const comments = res.data.comments;
             setComments(comments);
@@ -125,7 +131,7 @@ const CommentArea = ({ discussionID }) => {
         }
     }
     return (
-        <Card className="w-full flex-1" title={`${comments.length}条评论`} rightHeader={
+        <Card className="w-full flex-1" title={`${commentNum}条评论`} rightHeader={
             <button onClick={() => { setPublishing(prev => !prev) }} className={`${publishing ? "bg-slate-400 hover:bg-slate-500" : "bg-blue-400 hover:bg-blue-500"} p-1 border rounded-md text-white  text-lg`}>发表评论</button>
         }>
             {publishing &&
@@ -146,7 +152,7 @@ const CommentArea = ({ discussionID }) => {
     )
 }
 
-const DiscussionDetail = () => {
+const Discussion = () => {
     const navigate = useNavigate();
     const { id: domainID } = domainStore();
     const { discussionID = null } = useParams();
@@ -167,25 +173,33 @@ const DiscussionDetail = () => {
 
     }, []);
 
+    const handleRemove = async () => {
+        const res = await api.remove(domainID, discussionID);
+        if (res.success) {
+            navigate("/discussions")
+        }
+    }
+
     return (
         <div className="flex w-3/5 h-full justify-center flex-col">
             <div className="border  w-full flex items-center p-2">
-                <div className="font-bold text-xl ">{title}</div>
+                <div className="font-bold text-xl ">{discussion.title}</div>
                 <div className="ml-auto">
-                    <button className="border p-1 rounded-md text-white bg-red-500 hover:bg-red-600">删除讨论</button>
+                    <button onClick={handleRemove} className="border p-1 rounded-md text-white bg-red-400 hover:bg-red-500">删除讨论</button>
+                    <button onClick={() => { navigate(`/discussion/edit/${discussionID}`) }} className="border p-1 rounded-md text-white bg-blue-400 hover:bg-blue-500">编辑</button>
                 </div>
             </div>
             <div className="flex flex-col gap-2 border">
                 <div className="flex gap-5 items-center p-2">
-                    <div>{creatorUsername}</div>
-                    <div>{dateFormat(createTime)}</div>
+                    <div>{discussion.creatorUsername}</div>
+                    <div>{dateFormat(discussion.createTime)}</div>
                 </div>
                 <div className="p-2 w-full">
-                    <RichTextEditor readonly={true} value={content} />
+                    {discussion.content && <RichTextEditor readonly={true} value={discussion.content} />}
                 </div>
             </div>
-            <CommentArea discussionID={discussionID} />
+            <CommentArea commentNum={discussion.commentNum} discussionID={discussionID} />
         </div>
     )
 }
-export default DiscussionDetail;
+export default Discussion;

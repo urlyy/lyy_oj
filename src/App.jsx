@@ -12,25 +12,27 @@ import Footer from "./components/Footer";
 import Nav from './components/Nav';
 import Index from './pages/index/Index';
 import Profile from "./pages/profile/Profile";
-import ProfileEdit from "./pages/profile/profileEdit/ProfileEdit";
-import Problems from "./pages/problem/problems/Problems";
-import Contests from "./pages/contest/contests/Contests";
+import ProfileEdit from "./pages/profile/ProfileEdit";
+import Problems from "./pages/problem/Problems";
 import Status from "./pages/status/Status";
-import Homeworks from "./pages/homework/homeworks/Homeworks";
+import Homeworks from "./pages/homework/Homeworks";
+import Homework from "./pages/homework/Homework";
+import HomeworkEdit from "./pages/homework/HomeworkEdit";
 import Rank from "./pages/rank/Rank";
 import Domains from "./pages/domains/Domains";
 import Security from "./pages/security/Security";
 import Problem from "./pages/problemDetail/Problem";
-import ContestProblems from "./pages/contest/problems/ContestProblems";
-import HomeworkProblems from "./pages/homework/problems/HomeworkProblems";
+import Contests from "./pages/contest/Contests";
+import Contest from "./pages/contest/Contest";
+import ContestEdit from './pages/contest/ContestEdit'
 import RootPanel from "./pages/rootPanel/RootPanel";
-import Discussions from "./pages/discussion/discussions/Discussions";
-import DiscussionDetail from "./pages/discussion/detail/DiscussionDetail";
-import ProblemEdit from "./pages/problem/edit/ProblemEdit";
-import HomeworkEdit from "./pages/homework/edit/HomeworkEdit";
-import ContestEdit from './pages/contest/edit/ContestEdit'
-import DiscussionEdit from "./pages/discussion/edit/DiscussionEdit";
+import Discussions from "./pages/discussion/Discussions";
+import Discussion from "./pages/discussion/Discussion";
+import ProblemEdit from "./pages/problem/ProblemEdit";
+import DiscussionEdit from "./pages/discussion/DiscussionEdit";
 import DomainManage from "./pages/domainManage/DomainMange";
+
+
 import api from './api'
 const App = () => {
   const { token } = userStore();
@@ -85,11 +87,11 @@ const App = () => {
     },
     {
       path: "/problems/contest/:contestID",
-      element: <ContestProblems />
+      element: <Contest />
     },
     {
       path: "/problems/homework/:homeworkID",
-      element: <HomeworkProblems />
+      element: <Homework />
     },
     {
       path: "/root",
@@ -101,7 +103,7 @@ const App = () => {
     },
     {
       path: "/discussion/:discussionID",
-      element: <DiscussionDetail />
+      element: <Discussion />
     },
     {
       path: "/problem/edit/:problemID",
@@ -181,7 +183,7 @@ const App = () => {
     <>
       {/* animate__animated animate__fadeInUp */}
       <Nav />
-      <main className="flex w-full flex-1 justify-center items-start ">
+      <main className="flex w-full flex-1 justify-center items-start p-2">
         {routes}
         {/* <Checker></Checker> */}
       </main>

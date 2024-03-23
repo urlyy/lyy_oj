@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Pagination from "@/components/Pagination";
 import { useNavigate } from "react-router-dom"
 import domainStore from "@/store/domain";
-import api from "../api";
+import api from "./api";
 import { dateFormat } from "@/utils/data2text";
 
 const DiscussionList = ({ data = [] }) => {

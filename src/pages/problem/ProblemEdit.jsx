@@ -5,7 +5,7 @@ import RichTextEditor from "@/components/RichTextEditor";
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom'
-import api from "../api";
+import api from "./api";
 import domainStore from "@/store/domain";
 import { diff2text } from "@/utils/data2text";
 
@@ -32,7 +32,7 @@ const ProblemEdit = () => {
 
     useEffect(() => {
         if (problemID !== null) {
-            api.getProblem(domainID, parseInt(problemID)).then((res) => {
+            api.get(domainID, parseInt(problemID)).then((res) => {
                 if (res.success) {
                     const problem = res.data.problem;
                     setTitle(problem.title);
@@ -87,7 +87,7 @@ const ProblemEdit = () => {
             alert("时空限制必须是数字");
             return;
         }
-        const res = await api.submitProblem(domainID, {
+        const res = await api.add(domainID, {
             problemID: problemID ? parseInt(problemID) : problemID,
             title,
             desc,
@@ -103,6 +103,12 @@ const ProblemEdit = () => {
             navigate("/problems");
         } else {
             alert(res.msg);
+        }
+    }
+    const handleRemove = async () => {
+        const res = await api.remove(domainID, problemID);
+        if (res.success) {
+            navigate("/problems")
         }
     }
 
@@ -183,6 +189,7 @@ const ProblemEdit = () => {
             <div className="flex justify-center gap-2">
                 <button onClick={handleSubmit} className="text-lg border rounded-md p-1 text-white hover:bg-green-500 bg-green-400">提交</button>
                 <button onClick={() => navigate("/problems")} className="text-lg border rounded-md p-1 hover:bg-slate-100">取消</button>
+                {problemID !== null && <button onClick={handleRemove} className="text-lg border rounded-md p-1 hover:bg-red-500 bg-red-400 text-white">删除</button>}
             </div>
         </div>
     )

@@ -1,3 +1,17 @@
+# TODO
+- 把表单加上label
+- 表单正则
+- 复用同一个的Button
+- 把所有的path上的id改成Str后缀
+- 判题机
+- 排名的rank方式
+- 导出excel
+- 切出网站管理
+- 权限
+- 根据excel导入用户
+    - 注册时不以@xx.com结尾，但是修改时必须要求
+- 单点登录
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

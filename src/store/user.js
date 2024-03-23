@@ -15,7 +15,7 @@ const userStore = create(set => ({
     username: user ? user.username : null,
     gender: user ? user.gender : null,
     school: user ? user.school : null,
-
+    website: user ? user.website : null,
     logout: () => {
         localStorage.removeItem("user");
         localStorage.removeItem("domain");
@@ -27,6 +27,7 @@ const userStore = create(set => ({
             username: null,
             gender: null,
             school: null,
+            website: null,
         }))
     },
     set: (user) => {
@@ -38,9 +39,15 @@ const userStore = create(set => ({
             username: user.username,
             gender: user.gender,
             school: user.school,
+            website: user.website,
         }
         localStorage.setItem("user", JSON.stringify(u));
         set(state => u)
+    },
+    setProfile: (username, gender, school, website) => {
+        set(state => ({
+            ...state, username, gender, school, website,
+        }))
     },
     setAvatar: (avatar) => {
         // localStorage.setItem("user", JSON.stringify(user));

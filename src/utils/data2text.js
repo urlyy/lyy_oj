@@ -32,6 +32,33 @@ export const dateFormat = (dateString) => {
     const hours = inputDate.getUTCHours().toString().padStart(2, '0');
     const minutes = inputDate.getUTCMinutes().toString().padStart(2, '0');
     // 格式化为目标字符串
-    const formattedDateString = `${year}-${month}-${day} ${hours}:${minutes}`;
-    return formattedDateString
+    const s = `${year}-${month}-${day} ${hours}:${minutes}`;
+    return s
+}
+
+export const gender2text = (gender) => {
+    if (gender == 1) {
+        return "男"
+    } else if (gender == 2) {
+        return "女"
+    } else {
+        return "未知";
+    }
+}
+
+export const str2date = (dateString) => {
+    const inputDate = new Date(dateString);
+    const year = inputDate.getUTCFullYear();
+    const month = (inputDate.getUTCMonth() + 1).toString().padStart(2, '0');
+    const day = inputDate.getUTCDate().toString().padStart(2, '0');
+    const s = `${year}-${month}-${day}`;
+    return s
+}
+
+export const str2time = (dateString) => {
+    const inputDate = new Date(dateString);
+    const hours = inputDate.getUTCHours().toString().padStart(2, '0');
+    const minutes = inputDate.getUTCMinutes().toString().padStart(2, '0');
+    const s = `${hours}:${minutes}`;
+    return s
 }
