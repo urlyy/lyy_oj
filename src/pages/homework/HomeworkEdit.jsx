@@ -43,8 +43,8 @@ const HomeworkEdit = () => {
         }
     }
     useEffect(() => {
+        handleGetProblems(1);
         if (homeworkIDStr !== null) {
-            handleGetProblems(1);
             api.get(domainID, homeworkIDStr).then(res => {
                 if (res.success) {
                     const homework = res.data.homework;
@@ -103,7 +103,7 @@ const HomeworkEdit = () => {
         const end = endDate + " " + endTime;
         const res = await api.add(domainID, {
             homeworkID: parseInt(homeworkIDStr),
-            title, desc, pub: pub === "true" ? true : false,
+            title, desc, pub,
             start, end, problemIDs: selectProblems.map(item => item.id)
         });
         if (res.success) {
@@ -130,7 +130,9 @@ const HomeworkEdit = () => {
             <div className="flex gap-3">
                 <label className="flex-1 flex flex-col">
                     <Header>公开状态</Header>
-                    <Select selectedValue={pub} onChange={setPublic} entries={[
+                    <Select selectedValue={pub} onChange={
+                        (str) => { if (str === "true") { setPublic(true) } else { setPublic(false) } }
+                    } entries={[
                         ["私有", false],
                         ["公开", true]
                     ]} className="flex-1" />
@@ -155,28 +157,26 @@ const HomeworkEdit = () => {
                     <Header>作业描述</Header>
                     <RichTextEditor value={desc} onChange={setDesc} />
                 </div>
-                {homeworkIDStr !== null &&
-                    <div>
-                        <Header>题目列表</Header>
-                        <div className="flex gap-4 w-full">
-                            {selectProblems.map((problem, idx) => (
-                                <div key={idx} className="flex gap-2 items-center text-lg">
-                                    <span>{idx + 1}.{problem.title}</span>
-                                    <button onClick={handleRemoveProblem.bind(null, idx)} className="text-red-400 hover:text-red-500 ">移除</button>
-                                </div>
-                            ))}
-                        </div>
-                        <div>
-                            <button className="border p-1 text-lg bg-green-400 hover:bg-green-500 text-white rounded-lg" onClick={setShowSelectModal.bind(null, true)}>添加题目</button>
-                        </div>
-                        {showSelectModal && <Modal onClose={setShowSelectModal.bind(null, false)}>
-                            <ProblemTable onClick={handleSelectProblem} data={problems} />
-                            <div className="border">
-                                <Pagination onChange={handleChangePage} current={curPage} pageNum={pageNum} />
+                <div>
+                    <Header>题目列表</Header>
+                    <div className="flex gap-4 w-full">
+                        {selectProblems.map((problem, idx) => (
+                            <div key={idx} className="flex gap-2 items-center text-lg">
+                                <span>{idx + 1}.{problem.title}</span>
+                                <button onClick={handleRemoveProblem.bind(null, idx)} className="text-red-400 hover:text-red-500 ">移除</button>
                             </div>
-                        </Modal>}
+                        ))}
                     </div>
-                }
+                    <div>
+                        <button className="border p-1 text-lg bg-green-400 hover:bg-green-500 text-white rounded-lg" onClick={setShowSelectModal.bind(null, true)}>添加题目</button>
+                    </div>
+                    {showSelectModal && <Modal onClose={setShowSelectModal.bind(null, false)}>
+                        <ProblemTable onClick={handleSelectProblem} data={problems} />
+                        <div className="border">
+                            <Pagination onChange={handleChangePage} current={curPage} pageNum={pageNum} />
+                        </div>
+                    </Modal>}
+                </div>
             </div>
             <div className="flex justify-center gap-2">
                 <button onClick={handleSubmit} className="text-lg border rounded-md p-1 text-white hover:bg-green-500 bg-green-400">提交</button>

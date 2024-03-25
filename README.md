@@ -11,6 +11,7 @@
 - 根据excel导入用户
     - 注册时不以@xx.com结尾，但是修改时必须要求
 - 单点登录
+- 把select的setValue改为parseint
 
 # Getting Started with Create React App
 

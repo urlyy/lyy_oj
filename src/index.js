@@ -17,6 +17,8 @@ Boot.registerModule(formulaModule)
 
 
 
+document.title = 'lyyOJ'
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 

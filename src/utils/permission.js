@@ -1,6 +1,3 @@
-const permissions = {
-    "qwer": 1,
-    "asdf": 2,
+export default (permission, bitPosition) => {
+    return (permission & (1 << bitPosition)) !== 0;
 }
-
-console.log(permissions.asdf)

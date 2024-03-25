@@ -1,4 +1,6 @@
-const a = "2024-03-21T22:29:00Z"
-const b = "2024-03-21T20:29:00Z"
-const d = new Date(a) - new Date(b);
-console.log(d / 1000)
+function isBitSet(number, bitPosition) {
+    // 将 1 左移 bitPosition 位，与 number 进行按位与运算
+    // 如果结果为 0，则表示该位上的值为 0；否则为 1
+    return (number & (1 << bitPosition)) !== 0;
+}
+

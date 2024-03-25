@@ -93,10 +93,10 @@ const ProblemEdit = () => {
             desc,
             memoryLimit: parseInt(memoryLimit),
             timeLimit: parseInt(timeLimit),
-            diff: parseInt(diff),
+            diff: diff,
             inputFormat,
             outputFormat,
-            pub: pub === "true" ? true : false,
+            pub: pub,
             other,
         });
         if (res.success) {
@@ -130,14 +130,16 @@ const ProblemEdit = () => {
                         [diff2text(1), 1],
                         [diff2text(2), 2],
                         [diff2text(3), 3],
-                    ]} onChange={setDiff} className="flex-1" />
+                    ]} onChange={(str) => setDiff(parseInt(str))} className="flex-1" />
                 </label>
                 <label className="flex-1 flex flex-col">
                     <Header>公开状态</Header>
                     <Select selectedValue={pub} entries={[
                         ["私有", false],
                         ["公开", true],
-                    ]} onChange={setPublic} className="flex-1" />
+                    ]} onChange={
+                        (str) => { if (str === "true") { setPublic(true) } else { setPublic(false) } }
+                    } className="flex-1" />
                 </label>
                 <label className="flex-1">
                     <Header>时间限制(MS)</Header>

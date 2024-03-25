@@ -47,7 +47,7 @@ const DomainProfileManage = () => {
                 </div>
                 <div className="flex justify-center">
                     <button onClick={handleReset} className="border border-slate-200 p-2  hover:bg-slate-100 rounded-sm">重置</button>
-                    <button onClick={handleSubmit} className="border border-slate-200 p-2  hover:bg-slate-100 rounded-sm">提交所有修改</button>
+                    <button onClick={handleSubmit} className="border border-slate-200 p-2  hover:bg-slate-100 rounded-sm">提交修改</button>
                 </div>
             </div>
         </Card>

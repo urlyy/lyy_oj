@@ -140,6 +140,9 @@ const App = () => {
     {
       path: "admin",
       element: <DomainManage />
+    }, {
+      path: "root",
+      element: <RootPanel />
     },
   ]);
   //未登录
@@ -160,15 +163,6 @@ const App = () => {
       </>
     )
   }
-  //根目录管理
-  // if (currentUrl == "/root") {
-  //   return (
-  //     <>
-  //       <RootPanel />
-  //       <Footer />
-  //     </>
-  //   )
-  // }
   if (domainName === null || domainName === undefined) {
     api.getDomain(domainID).then(res => {
       if (res.success === true) {

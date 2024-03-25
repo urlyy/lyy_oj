@@ -35,7 +35,7 @@ const Filter = ({ onFilter, keyword, onKeywordChange, diff, onDiffChange }) => {
                         [diff2text(1), 1],
                         [diff2text(2), 2],
                         [diff2text(3), 3],
-                    ]} selectedValue={diff} onChange={onDiffChange} className={`w-full`} />
+                    ]} selectedValue={diff} onChange={(str) => onDiffChange(parseInt(str))} className={`w-full`} />
                 </label>
             </div>
         </Card>

@@ -36,7 +36,7 @@ const Nav = ({ }) => {
     const navigate = useNavigate();
     const logout = userStore(state => state.logout);
     const leaveDomain = domainStore(state => state.clear);
-    const { id: domainID } = domainStore();
+    const { id: domainID, name: domainName } = domainStore();
     const { id: userID, username } = userStore();
     const [activeIdx, setActiveIdx] = useState(0);
     // const routes = (path) => {
@@ -60,6 +60,7 @@ const Nav = ({ }) => {
         leaveDomain();
         localStorage.removeItem("domain");
     }
+
     return (
         <nav className='flex w-full justify-center bg-white rounded-sm shadow-md'>
             <div className="flex w-3/5 items-center">
@@ -83,6 +84,7 @@ const Nav = ({ }) => {
                     ].map(([title, handleClick, need_prev], idx) => (
                         <NavItem active={activeIdx === idx} onClick={handleClick.bind(null, idx)} key={idx}>{title}</NavItem>
                     ))}
+                    {domainName === "ROOT" && <NavItem active={activeIdx === 8} onClick={() => { handleNavigate("/root", 8) }} >root面板</NavItem>}
                     <Dropdown active={activeIdx === -1} title={username} alignRight={true}>
                         <DropdownItem onClick={() => handleNavigate(`/${userID}/profile`, -1)}>我的资料</DropdownItem>
                         <DropdownItem onClick={() => handleNavigate('/security', -1)}>安全设置</DropdownItem>

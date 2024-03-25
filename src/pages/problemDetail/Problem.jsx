@@ -28,7 +28,7 @@ const EditorArea = ({ problemID, onSubmit }) => {
                 <button className="w-20 bg-green-500 text-white border rounded-md p-1 hover:bg-green-600" onClick={handleTest}>提交</button>
             </div>
             <div className="flex-1">
-                <CodeEditor code={code} readonly={true} onChange={setCode} />
+                <CodeEditor code={code} readonly={false} onChange={setCode} />
             </div>
         </div>
     )

@@ -21,7 +21,6 @@ const DiscussionList = ({ data = [] }) => {
                     <div className="text-center">
                         <div className="text-3xl">{discussion.commentNum}</div>
                         <div>条评论</div>
-
                     </div>
                     <div className="flex flex-col justify-between gap-2">
                         <div className="text-xl">{discussion.title}</div>

@@ -37,9 +37,9 @@ export const dateFormat = (dateString) => {
 }
 
 export const gender2text = (gender) => {
-    if (gender == 1) {
+    if (gender === 1) {
         return "男"
-    } else if (gender == 2) {
+    } else if (gender === 2) {
         return "女"
     } else {
         return "未知";
