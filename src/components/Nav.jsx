@@ -32,11 +32,11 @@ const DropdownItem = ({ children, onClick }) => {
     )
 }
 
-const Nav = ({ }) => {
+const Nav = () => {
     const navigate = useNavigate();
     const logout = userStore(state => state.logout);
     const leaveDomain = domainStore(state => state.clear);
-    const { id: domainID, name: domainName } = domainStore();
+    const { name: domainName, ownerID } = domainStore();
     const { id: userID, username } = userStore();
     const [activeIdx, setActiveIdx] = useState(0);
     // const routes = (path) => {
@@ -61,6 +61,25 @@ const Nav = ({ }) => {
         localStorage.removeItem("domain");
     }
 
+    const navItems = () => {
+        const items = [
+            ['首页', handleNavigate.bind(null, "/")],
+            ['题库', handleNavigate.bind(null, `/problems`)],
+            ['作业', handleNavigate.bind(null, `/homeworks`)],
+            ['比赛', handleNavigate.bind(null, `/contests`)],
+            ['排名', handleNavigate.bind(null, `/rank`)],
+            ['判题记录', handleNavigate.bind(null, `/submissions`)],
+            ['讨论', handleNavigate.bind(null, '/discussions')],
+        ]
+        if (ownerID === userID) {
+            items.push(['管理当前域', handleNavigate.bind(null, '/admin')])
+        }
+        if (domainName === "ROOT") {
+            items.push(['root面板', handleNavigate.bind(null, '/root')])
+        }
+        return items;
+    }
+
     return (
         <nav className='flex w-full justify-center bg-white rounded-sm shadow-md'>
             <div className="flex w-3/5 items-center">
@@ -69,22 +88,12 @@ const Nav = ({ }) => {
                         <img
                             src="/logo.png"
                             className='w-10 aspect-square '
-                            alt="Picture of the author"
                         />
                     </NavItem>
-                    {[
-                        ['首页', handleNavigate.bind(null, "/")],
-                        ['题库', handleNavigate.bind(null, `/problems`)],
-                        ['作业', handleNavigate.bind(null, `/homeworks`)],
-                        ['测验', handleNavigate.bind(null, `/contests`)],
-                        ['排名', handleNavigate.bind(null, `/rank`)],
-                        ['评测记录', handleNavigate.bind(null, `/status`)],
-                        ['讨论', handleNavigate.bind(null, '/discussions')],
-                        ['管理当前域', handleNavigate.bind(null, '/admin')],
-                    ].map(([title, handleClick, need_prev], idx) => (
+                    {navItems().map(([title, handleClick], idx) => (
                         <NavItem active={activeIdx === idx} onClick={handleClick.bind(null, idx)} key={idx}>{title}</NavItem>
                     ))}
-                    {domainName === "ROOT" && <NavItem active={activeIdx === 8} onClick={() => { handleNavigate("/root", 8) }} >root面板</NavItem>}
+
                     <Dropdown active={activeIdx === -1} title={username} alignRight={true}>
                         <DropdownItem onClick={() => handleNavigate(`/${userID}/profile`, -1)}>我的资料</DropdownItem>
                         <DropdownItem onClick={() => handleNavigate('/security', -1)}>安全设置</DropdownItem>

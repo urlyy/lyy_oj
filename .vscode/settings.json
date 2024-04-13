@@ -1,0 +1,5 @@
+{
+    "plantuml.server": "http://192.168.88.132:8585",
+    "plantuml.render": "PlantUMLServer",
+    "plantuml.previewAutoUpdate": true,
+}

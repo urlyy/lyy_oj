@@ -4,6 +4,7 @@ import RoleManage from './RoleManage'
 import UserManage from './UserManage'
 import ProfileManage from './ProfileManage'
 import { useState } from "react"
+import NotificationManage from "./NotificationManage"
 
 
 const DomainManage = () => {
@@ -14,6 +15,7 @@ const DomainManage = () => {
         "用户管理": <UserManage />,
         "角色管理": <RoleManage />,
         "权限管理": <PermissionManage />,
+        "通知管理": <NotificationManage />,
     }
 
 

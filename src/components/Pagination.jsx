@@ -1,4 +1,5 @@
 const Pagination = ({ current, pageNum, onChange = () => { } }) => {
+    pageNum = Math.max(1, pageNum);
     const range = (left, right) => {
         const l = Math.max(left, 1);
         const r = Math.min(right, pageNum);
@@ -13,7 +14,7 @@ const Pagination = ({ current, pageNum, onChange = () => { } }) => {
     let ranges = Array.from(new Set([...range1, current, ...range2]));
     if (ranges.length < 11) {
         const sub = 11 - ranges.length;
-        if (ranges[0] != 1) {
+        if (ranges[0] !== 1) {
             //左扩
             const extend = range(ranges[0] - sub, ranges[0] - 1);
             ranges = [...extend, ...ranges];
@@ -24,28 +25,28 @@ const Pagination = ({ current, pageNum, onChange = () => { } }) => {
         }
     }
     let buttons = [];
-    if (pageNum > 1) {
-        buttons.push(<button onClick={() => { onChange(1) }} key="page-first" className="p-1 text-center">首页</button>)
+    if (pageNum > 1 && current !== 1) {
+        buttons.push(<button onClick={() => { onChange(1) }} key="page-first" className="hover:border-b hover:border-b-red-400 p-1 text-lg text-center">首页</button>)
     }
     if (current >= 2) {
-        buttons.push(<button onClick={() => { onChange(current - 1) }} key="page-prev" className="p-1 text-center hover:border-b hover:border-blue-400">{'<'}</button>);
+        buttons.push(<button onClick={() => { onChange(current - 1) }} key="page-prev" className="p-1 text-lg text-center hover:border-b hover:border-blue-400">{'<'}</button>);
         // buttons.push();
     }
 
     ranges.forEach((num, idx) => {
-        if (idx == 0 && ranges[0] != 1) {
+        if (idx === 0 && ranges[0] != 1) {
             buttons.push(<button type="button" key={`page-sl-0`} disabled className='p-1 text-center bg-white  aspect-square'>...</button>);
         }
-        buttons.push(<button type="button" key={`page-${idx}`} className={`${num === current ? 'text-red-400 border-b border-red-400 pointer-events-none' : ''} p-1 text-center bg-white hover:border-b hover:border-blue-400`} onClick={() => { onChange(num) }}>{num}</button>);
-        if (idx == ranges.length - 1 && ranges[ranges.length - 1] != pageNum) {
+        buttons.push(<button type="button" key={`page-${idx}`} className={`${num === current ? 'text-red-400 border-b border-red-400 pointer-events-none' : ''} p-1 text-center text-lg  bg-white hover:border-b hover:border-blue-400`} onClick={() => { onChange(num) }}>{num}</button>);
+        if (idx === ranges.length - 1 && ranges[ranges.length - 1] != pageNum) {
             buttons.push(<button type="button" key={`page-sl-1`} disabled className='p-1 text-center bg-white aspect-square'>...</button>);
         }
     })
     if (current <= pageNum - 1) {
         buttons.push(<button onClick={() => { onChange(current + 1) }} key="page-next" className="p-1 text-center hover:border-b hover:border-blue-400">{'>'}</button>);
     }
-    if (pageNum > 1) {
-        buttons.push(<button onClick={() => { onChange(pageNum) }} key="page-last" className=" p-1 text-center">末页</button>);
+    if (pageNum > 1 && current !== pageNum) {
+        buttons.push(<button onClick={() => { onChange(pageNum) }} key="page-last" className="hover:border-b hover:border-b-red-400 text-lg p-1 text-center">末页</button>);
     }
     return (
         <div className='flex justify-center'>

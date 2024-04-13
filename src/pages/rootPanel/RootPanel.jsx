@@ -9,12 +9,10 @@ const RootPanel = () => {
     const [currentUrl, setCurrentUrl] = useState("用户管理");
     const menus =
     {
+        "域管理": <DomainMange />,
         "用户管理": <UserManage />,
-        "角色管理": <DomainMange />,
         "权限管理": <PermissionManage />,
     }
-
-
     return (
         <div className="h-full gap-2 w-3/5 flex justify-center animate__slideInBottom">
             <div className="w-1/5">

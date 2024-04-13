@@ -11,8 +11,8 @@ const api = {
         const res = await request.get(`/contest/${contestID}`, { d: domainID });
         return res;
     },
-    list: async (domainID, pageNum) => {
-        const res = await request.get(`/contest/list`, { d: domainID, page: pageNum });
+    list: async (domainID, pageNum, flag) => {
+        const res = await request.get(`/contest/list`, { d: domainID, page: pageNum, flag });
         return res;
     },
     addProblems: async (domainID, contestID, problemIDs) => {
@@ -30,6 +30,15 @@ const api = {
     remove: async (domainID, contestID) => {
         const res = await request.delete(`/contest/${contestID}`, { d: domainID });
         return res;
-    }
+    },
+    getSubmissions: async (domainID, contestID) => {
+        const res = await request.get(`/submission/special/rank`, { d: domainID, id: contestID, type: "contest" });
+        return res;
+    },
+    getUsers: async (domainID) => {
+        const res = await request.get(`/domain/${domainID}/users`)
+        return res;
+    },
+
 }
 export default api;

@@ -11,5 +11,17 @@ const api = {
         });
         return res;
     },
+    getPieData: async (domainID, userID) => {
+        const res = await request.get(`/submission/pie/${userID}`, { d: domainID });
+        return res;
+    },
+    getRecords: async (domainID, userID, page, title) => {
+        const res = await request.get(`/submission/records/${userID}`, { d: domainID, page, title });
+        return res;
+    },
+    getRecordSubmissions: async (domainID, userID, problemID) => {
+        const res = await request.get(`/submission/record/${userID}/${problemID}`, { d: domainID });
+        return res;
+    }
 }
 export default api;

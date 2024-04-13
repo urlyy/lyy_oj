@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 import userStore from '@/store/user'
 import domainStore from '@/store/domain';
-import Alert from '@/components/Alert';
+import Alert from '@/utils/alert';
+import Toast from '@/utils/toast';
 
 const Input = ({ label, onChange, value, isPassword }) => {
     return (
@@ -29,6 +30,10 @@ const LoginForm = ({ onToggle }) => {
     const [trueID, setTrueID] = useState("");
     const [password, setPassword] = useState("");
     const handleSubmit = async () => {
+        if ((loginMode === "trueID" && trueID === "" || loginMode === "email" && email === "") || password === "") {
+            Alert("请填写完整信息");
+            return;
+        }
         const res = await api.login(email, trueID, password);
         if (res.success === true) {
             const { user, token, domainID = null } = res.data;
@@ -75,31 +80,37 @@ const ForgetPassForm = ({ onToggle }) => {
     const [passwordConfirm, setPasswordConfirm] = useState("");
     const [captcha, setCaptcha] = useState("");
     const handelSendCaptcha = async () => {
-        if (email !== "") {
-            const res = await api.sendForgetPasswordCaptcha(email);
-            if (res.success) {
-                alert("发送成功");
-            } else {
-                alert(res.msg);
-            }
-        } else {
-            alert("邮箱不能为空")
-            // Alert()
+        if (email === "") {
+            Alert("请填写邮箱");
+            return;
         }
-
+        const res = await api.sendForgetPasswordCaptcha(email);
+        if (res.success) {
+            Toast("发送成功");
+        } else {
+            Alert(res.msg);
+        }
     }
     const submit = async () => {
+        if (email === "" || password === "" || password !== passwordConfirm || captcha === "") {
+            Alert("填写不能为空");
+            return;
+        }
+        if (password !== passwordConfirm) {
+            Alert("两次密码不一致");
+            return;
+        }
     }
     return (
         <>
             <div className='text-center text-3xl text-white mb-3'>忘记密码</div>
             <form className='flex flex-col gap-5 w-full'>
                 <Input value={email} onChange={setEmail} label={"邮箱"} />
-                <Input isPassword={true} value={password} onChange={setPassword} label={"密码"} />
+                <Input isPassword={true} value={password} onChange={setPassword} label={"新密码"} />
                 <Input isPassword={true} value={passwordConfirm} onChange={setPasswordConfirm} label={"密码确认"} />
                 <div className='flex'>
                     <div className='w-2/3'>
-                        <Input isPassword={true} value={captcha} onChange={setCaptcha} label={"密码"} />
+                        <Input isPassword={true} value={captcha} onChange={setCaptcha} label={"验证码"} />
                     </div>
                     <div className='w-1/3 flex items-end'>
                         <Button onClick={handelSendCaptcha}>发送验证码</Button>

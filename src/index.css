@@ -21,9 +21,11 @@ select {
   padding: 0 !important;
 }
 
-.w-e-text-container [data-slate-editor] p {
+.w-e-text-container [data-slate-editor]>* {
   margin: 0 !important;
 }
+
+
 
 
 body {

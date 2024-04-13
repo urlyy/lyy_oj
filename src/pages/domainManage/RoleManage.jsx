@@ -5,6 +5,8 @@ import domainStore from "@/store/domain";
 import Select from "@/components/Select";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
+import Alert from "@/utils/alert";
+import Toast from "@/utils/toast";
 
 
 const RoleManage = ({ }) => {
@@ -41,7 +43,8 @@ const RoleManage = ({ }) => {
 
     }
     const handleSubmit = async () => {
-        let roleID = null, roleDesc, roleName;
+        let roleID = null;
+        let roleDesc, roleName;
         if (editedIdx !== -1) {
             const role = roles[editedIdx];
             roleID = role.id;
@@ -50,6 +53,14 @@ const RoleManage = ({ }) => {
         } else {
             roleDesc = createRoleDesc;
             roleName = createRoleName;
+        }
+        if (roleDesc === "" || roleName === "") {
+            Alert("角色信息请填写完整");
+            return;
+        }
+        if (roleName === "owner" || roleName === "default") {
+            Alert("角色名称不能为owner和default");
+            return;
         }
         const res = await api.upsertRole(domainID, { roleID, roleDesc, roleName });
         if (res.success) {
@@ -61,61 +72,74 @@ const RoleManage = ({ }) => {
                     return tmp;
                 })
                 setEditedIdx(-1);
+                Toast("修改成功", "success")
             } else {
                 setRoles(prev => [...prev, role]);
                 setShowCreateInput(false);
+                Toast("新增角色成功", "success")
             }
         }
     }
 
     return (
         <Card className="animate__slideInBottom">
-            <div className="grid grid-cols-3 border-l border-r border-t w-full">
-                <div className="grid col-span-3 grid-cols-3 border-b p-1">
-                    <div className="">角色名</div>
-                    <div className=" text-center">描述</div>
-                    <div className="">操作</div>
-                </div>
-                {roles.map((role, idx) => (
-                    <div key={idx} className="grid col-span-3 grid-cols-3 items-center border-b ">
-                        {editedIdx !== idx ?
-                            <>
-                                <div className="p-1">{role.name}</div>
-                                <div className="p-1 text-center">{role.desc}</div>
-                                <div>
-                                    <Button type="primary" onClick={handleStartEdit.bind(null, idx)}>编辑</Button>
-                                    {/* <Button type="danger" onClick={handleRemove.bind(null, idx)}>删除</Button> */}
-                                </div>
-                            </> :
-                            < >
-                                <Input className={"m-1"} onChange={setEditRoleName} value={editRoleName} />
-                                <Input className={"m-1"} onChange={setEditRoleDesc} value={editRoleDesc} />
-                                <div className="flex gap-1 m-1">
-                                    <Button type="default" onClick={() => { setEditedIdx(-1); }}>取消</Button>
-                                    <Button type="primary" onClick={handleSubmit}>确定</Button>
-                                </div>
-                            </>
-                        }
+            <table className="w-full">
+                <thead>
+                    <tr className="border">
+                        <td className="text-center">角色名</td>
+                        <td className=" text-center">描述</td>
+                        <td className="text-center">操作</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {roles.map((role, idx) => (
+                        <tr key={idx} className="border hover:bg-slate-100">
+                            {editedIdx !== idx ?
+                                <>
+                                    <td className="p-1 text-center">{role.name}</td>
+                                    <td className="p-1 text-center">{role.desc}</td>
+                                    <td className="flex justify-center">
+                                        {role.domainID !== 0 && <Button type="primary" onClick={handleStartEdit.bind(null, idx)}>编辑</Button>}
+                                        {/* <Button type="danger" onClick={handleRemove.bind(null, idx)}>删除</Button> */}
+                                    </td>
+                                </> :
+                                < >
+                                    <td>
+                                        <Input className={"m-1"} onChange={setEditRoleName} value={editRoleName} />
+                                    </td>
+                                    <td>
+                                        <Input className={"m-1"} onChange={setEditRoleDesc} value={editRoleDesc} />
 
-                    </div>
-                ))}
+                                    </td>
+                                    <td className="flex gap-1 m-1 justify-center">
+                                        <Button type="default" onClick={() => { setEditedIdx(-1); }}>取消</Button>
+                                        <Button type="primary" onClick={handleSubmit}>确定</Button>
+                                    </td>
+                                </>
+                            }
+                        </tr>
+                    ))}
 
-                {showCreateInput ?
-                    <div className="grid col-span-3 grid-cols-3 items-center border-b ">
-                        <Input className={"m-1"} onChange={setCreateRoleName} value={createRoleName} />
-                        <Input className={"m-1"} onChange={setCreateRoleDesc} value={createRoleDesc} />
-                        <div className="flex gap-1">
-                            <Button type="primary" onClick={handleSubmit}>确定</Button>
-                            <Button type="danger" onClick={() => { setShowCreateInput(false); }}>取消</Button>
-                        </div>
-
-                    </div>
-                    :
-                    <div className="col-span-3">
-                        <Button className="w-full" onClick={setShowCreateInput.bind(null, true)}>+新建角色</Button>
-                    </div>
-                }
-            </div>
+                    {showCreateInput ?
+                        <tr className="border-b">
+                            <td>
+                                <Input className={"m-1"} onChange={setCreateRoleName} value={createRoleName} />
+                            </td>
+                            <td>
+                                <Input className={"m-1"} onChange={setCreateRoleDesc} value={createRoleDesc} />
+                            </td>
+                            <td className="flex gap-1">
+                                <Button type="primary" onClick={handleSubmit}>确定</Button>
+                                <Button type="danger" onClick={() => { setShowCreateInput(false); }}>取消</Button>
+                            </td>
+                        </tr>
+                        :
+                        <td colSpan={3}>
+                            <Button className="w-full" onClick={setShowCreateInput.bind(null, true)}>+新建角色</Button>
+                        </td>
+                    }
+                </tbody>
+            </table>
         </Card>
     )
 }

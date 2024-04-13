@@ -1,6 +1,6 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, memo } from "react";
 
-const Textarea = ({ scroll = true, placeholder = "", value, onChange, className = "" }) => {
+const Textarea = ({ scroll = true, placeholder = "", value, onChange, className = "", disabled = false }) => {
     const textareaRef = useRef(null);
     useEffect(() => {
         if (textareaRef.current) {
@@ -10,7 +10,8 @@ const Textarea = ({ scroll = true, placeholder = "", value, onChange, className 
         }
     }, [value])
     return (
-        <textarea ref={textareaRef} placeholder={placeholder} value={value} className={`w-full border rounded-md p-1 resize-none ${className}`} onChange={e => onChange(e.target.value)} />
+        <textarea disabled={disabled} ref={textareaRef} placeholder={placeholder} value={value} className={`w-full border rounded-md p-1 resize-none ${className}`} onChange={e => onChange(e.target.value)} />
     )
 }
+
 export default Textarea

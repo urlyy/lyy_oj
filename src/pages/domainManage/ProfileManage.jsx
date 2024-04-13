@@ -4,11 +4,15 @@ import RichTextEditor from "@/components/RichTextEditor";
 import { useState, useEffect } from "react";
 import domainStore from "@/store/domain";
 import api from "./api";
+import Toast from "@/utils/toast";
+import Alert from "@/utils/alert";
+
 const DomainProfileManage = () => {
-    const { id, name, announce } = domainStore();
+    const { id, name, announce, recommend } = domainStore();
     const setDomain = domainStore(state => state.set)
     const [tmpName, setTmpName] = useState(name);
     const [tmpAnnounce, setTmpAnnounce] = useState(announce);
+    const [tmpRecommend, setTmpRecommend] = useState(recommend);
     useEffect(() => {
         api.getProfile(id).then(res => {
             if (res.success) {
@@ -16,35 +20,38 @@ const DomainProfileManage = () => {
                 setDomain(d);
                 setTmpName(d.name);
                 setTmpAnnounce(d.announce);
+                setTmpRecommend(d.recommend);
             }
         })
     }, [])
     const handleReset = () => {
         setTmpName(name);
         setTmpAnnounce(announce);
+        setTmpRecommend(recommend);
     }
     const handleSubmit = async () => {
         if (tmpName === "") {
-            alert("域名不能为空");
+            Alert("域名不能为空");
             return;
         }
-        const res = await api.changeProfile(id, tmpName, tmpAnnounce);
+        const res = await api.changeProfile(id, tmpName, tmpAnnounce, tmpRecommend);
         if (res.success) {
-            setDomain({ id: id, name: tmpName, announce: tmpAnnounce });
-            alert("修改成功");
+            setDomain({ id: id, name: tmpName, announce: tmpAnnounce, recommend: tmpRecommend, });
+            Toast("修改成功");
         }
     }
     return (
         <Card className="animate__slideInBottom">
             <div className="flex flex-col gap-4">
-                <div>
-                    <div className="text-lg">域名称修改</div>
+                <Card title="域名称修改">
                     <Input className={"h-11 text-lg"} value={tmpName} onChange={setTmpName} />
-                </div>
-                <div>
-                    <div className="text-lg">域首页公告修改</div>
+                </Card>
+                <Card title="域首页公告修改">
                     <RichTextEditor value={tmpAnnounce} onChange={setTmpAnnounce} />
-                </div>
+                </Card>
+                <Card title="域首页推荐修改">
+                    <RichTextEditor value={tmpRecommend} onChange={setTmpRecommend} />
+                </Card>
                 <div className="flex justify-center">
                     <button onClick={handleReset} className="border border-slate-200 p-2  hover:bg-slate-100 rounded-sm">重置</button>
                     <button onClick={handleSubmit} className="border border-slate-200 p-2  hover:bg-slate-100 rounded-sm">提交修改</button>

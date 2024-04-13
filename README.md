@@ -4,14 +4,15 @@
 - 复用同一个的Button
 - 把所有的path上的id改成Str后缀
 - 判题机
-- 排名的rank方式
-- 导出excel
 - 切出网站管理
 - 权限
 - 根据excel导入用户
     - 注册时不以@xx.com结尾，但是修改时必须要求
 - 单点登录
 - 把select的setValue改为parseint
+- 将列数未知的grid改成table
+- 重新判题
+- 富文本的判定 <p></p>，需要用getText
 
 # Getting Started with Create React App
 
@@ -22,6 +23,8 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 [https://uiwjs.github.io/react-codemirror/](https://uiwjs.github.io/react-codemirror/)
 
 
+# Math.js
+[https://github.com/josdejong/mathjs](https://github.com/josdejong/mathjs)
 # Sweet Alert
 [https://sweetalert2.github.io/#declarative-templates](https://sweetalert2.github.io/#declarative-templates)
 

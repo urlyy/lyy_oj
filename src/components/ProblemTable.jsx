@@ -1,17 +1,22 @@
 import { useNavigate } from 'react-router-dom'
 import { diff2text } from '@/utils/data2text';
 
-const ProblemTable = ({ data = [], onClick }) => {
+const ProblemTable = ({ data = [], onClick, situationType, situationID, className = "" }) => {
     const navigate = useNavigate();
     const handleClick = (id, title) => {
         if (onClick) {
-            onClick(id, title)
+            onClick(id, title);
         } else {
-            navigate(`/problem/${id}`)
+            if (situationType) {
+                navigate(`/problem/${id}/${situationType}/${situationID}`);
+            } else {
+                navigate(`/problem/${id}`);
+            }
+
         }
     }
     return (
-        <div className="grid grid-cols-4 border-l border-r border-t">
+        <div className={`${className} grid grid-cols-4 border-l border-r border-t`}>
             <div className="col-span-4  border-b grid grid-cols-4">
                 <div className="p-1">序号</div>
                 <div className="p-1">题目</div>

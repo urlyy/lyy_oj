@@ -1,12 +1,14 @@
 import Input from "@/components/Input";
-import Select from "@/components/Select";
-import Textarea from "@/components/Textarea";
+// import Select from "@/components/Select";
+// import Textarea from "@/components/Textarea";
 import RichTextEditor from "@/components/RichTextEditor";
 
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import domainStore from "@/store/domain";
 import api from "./api";
+import Alert from "@/utils/alert";
+import Button from "@/components/Button";
 
 const Header = ({ children }) => {
     return (
@@ -35,7 +37,7 @@ const DiscussionEdit = () => {
 
     const handleSubmit = async () => {
         if (title === "" || content === "") {
-            alert("不能为空");
+            Alert("不能为空");
             return;
         }
         const res = await api.submit(domainID, { title, content, discussionID });
@@ -45,7 +47,7 @@ const DiscussionEdit = () => {
     }
 
     return (
-        <div className="flex w-3/5 h-full justify-start  flex-col gap-3">
+        <div className="bg-white flex w-3/5 h-full justify-start flex-col gap-3 animate__slideInBottom">
             <label>
                 <Header>讨论话题</Header>
                 <Input value={title} onChange={setTitle} className={`h-15`} />
@@ -57,8 +59,8 @@ const DiscussionEdit = () => {
                 </div>
             </div>
             <div className="flex justify-center gap-2">
-                <button onClick={handleSubmit} className="text-lg border rounded-md p-1 text-white hover:bg-green-500 bg-green-400">提交</button>
-                <button onClick={() => navigate("/contest")} className="text-lg border rounded-md p-1 hover:bg-slate-100">取消</button>
+                <Button onClick={handleSubmit} type="success">提交</Button>
+                <Button onClick={() => navigate("/discussions")} >取消</Button>
             </div>
         </div>
     )

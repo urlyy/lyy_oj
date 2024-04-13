@@ -3,6 +3,9 @@ import userStore from "@/store/user"
 import Input from "@/components/Input"
 import { useNavigate } from 'react-router-dom'
 import api from "./api"
+import Alert from "@/utils/alert"
+import Toast from "@/utils/toast"
+import Button from "@/components/Button"
 
 
 const CheckboxGroup = ({ title, entries, selectedValue, onChange }) => {
@@ -34,13 +37,13 @@ const ProfileEdit = () => {
 
     const handleSubmit = async () => {
         if (username === "") {
-            alert("不能为空");
+            Alert("个人资料不能为空");
             return;
         }
         const res = await api.changeProfile(tmpUsername, tmpGender, tmpSchool, tmpWebsite);
         if (res.success) {
             setProfile(tmpUsername, tmpGender, tmpSchool, tmpWebsite);
-            alert("修改成功");
+            Toast("修改个人资料成功");
             navigate(`/${id}/profile`);
         }
     }
@@ -53,13 +56,13 @@ const ProfileEdit = () => {
     }
 
     return (
-        <div className="flex flex-1 flex-col items-center">
+        <div className="bg-white flex flex-1 flex-col items-center  animate__slideInBottom">
             <div className="w-2/5 flex flex-col gap-2">
                 <div className="flex w-full gap-6">
-                    <label className="flex-1">
+                    {/* <label className="flex-1">
                         <div>用户名</div>
                         <Input onChange={setTmpUsername} value={tmpUsername} />
-                    </label>
+                    </label> */}
                     <CheckboxGroup
                         title={"性别"}
                         selectedValue={tmpGender}
@@ -83,14 +86,14 @@ const ProfileEdit = () => {
                         <Input value={tmpWebsite} onChange={setTmpWebsite} />
                     </label>
                 </div>
-                <div className="flex w-full gap-6">
-                    <button onClick={handleSubmit} className="text-lg border rounded-md p-1 text-white hover:bg-green-500 bg-green-400">保存</button>
-                    <button onClick={() => navigate("/profile")} className="text-lg border rounded-md p-1 hover:bg-slate-100">取消</button>
-                    <button onClick={() => navigate("/profile")} className="text-lg border rounded-md p-1 hover:bg-slate-100">取消</button>
+                <div className="flex w-full gap-6 justify-center">
+                    <Button type="primary" onClick={handleSubmit} >保存</Button>
+                    <Button onClick={() => navigate(`/${id}/profile`)} >取消</Button>
+                    <Button type="danger" onClick={handleReset} >重置</Button>
                 </div>
             </div>
 
-        </div>
+        </div >
     )
 }
 export default ProfileEdit;

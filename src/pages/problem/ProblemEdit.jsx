@@ -1,6 +1,7 @@
 import Input from "@/components/Input";
 import Select from "@/components/Select";
 import Textarea from "@/components/Textarea";
+import Button from "@/components/Button";
 import RichTextEditor from "@/components/RichTextEditor";
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -8,6 +9,9 @@ import { useNavigate } from 'react-router-dom'
 import api from "./api";
 import domainStore from "@/store/domain";
 import { diff2text } from "@/utils/data2text";
+import CodeEditor from "@/components/CodeEditor";
+import Toy from "@/components/Toy";
+import Alert from "@/utils/alert";
 
 const Header = ({ children }) => {
     return (
@@ -28,11 +32,14 @@ const ProblemEdit = () => {
     const [inputFormat, setInputFormat] = useState("");
     const [outputFormat, setOutputFormat] = useState("");
     const [other, setOther] = useState("");
-    const [samples, setSamples] = useState([]);
+    const [testCases, setTestCases] = useState([]);
+    const [judgeType, setJudgeType] = useState(0);
+    const [specialCode, setSpecialCode] = useState("");
+
 
     useEffect(() => {
         if (problemID !== null) {
-            api.get(domainID, parseInt(problemID)).then((res) => {
+            api.get(domainID, parseInt(problemID), true).then((res) => {
                 if (res.success) {
                     const problem = res.data.problem;
                     setTitle(problem.title);
@@ -44,47 +51,50 @@ const ProblemEdit = () => {
                     setInputFormat(problem.inputFormat);
                     setOutputFormat(problem.outputFormat);
                     setOther(problem.other);
-                    // setSamples(problem.samples);
+                    setTestCases(problem.testCases);
+                    setJudgeType(problem.judgeType);
+                    setSpecialCode(problem.specialCode);
                 } else {
-                    alert(res.msg);
+                    Alert(res.msg);
                 }
             });
         }
-
-        //         samples: [
-        //             { input: "1 2 \n3 4\n5 6", output: '3\n7' },
-        //             { input: "1 2 3 4", output: '3\n7\n11' },
-
-        //         ],
-
     }, [])
-    const handleAddSample = () => {
+    const handleAddTestCase = () => {
         const data = {
             input: "",
-            output: "",
+            expect: "",
+            isSample: false,
         }
-        setSamples(prev => [...prev, data]);
+        setTestCases(prev => [...prev, data]);
     }
-    const handleSampleChange = (idx, type, newVal) => {
-        console.log(idx, type, newVal)
-        if (type === "input" || type === "output") {
-            const data = [...samples];
+    const handleTestCaseChange = (idx, type, newVal) => {
+        if (type === "input" || type === "expect") {
+            const data = [...testCases];
             data[idx][type] = newVal;
-            setSamples(data);
+            setTestCases(data);
         } else {
             throw new Error("断言异常");
         }
     }
+    const handleRemoveTestCase = (idx) => {
+        setTestCases(prev => prev.filter((_, index) => idx !== index))
+    }
+    const handleSetSample = (idx, val) => {
+        const data = [...testCases];
+        data[idx].isSample = val;
+        setTestCases(data);
+    }
     const handleSubmit = async () => {
         if (title === "" || desc === "" || timeLimit === "" || memoryLimit === "" || inputFormat === "" || outputFormat === "") {
-            alert("不能为空");
+            Alert("题目信息不能为空");
             return;
         }
         const isNumber = (str) => {
             return typeof Number(str) === 'number' && !isNaN(Number(str));
         }
         if (!isNumber(timeLimit) || !isNumber(memoryLimit)) {
-            alert("时空限制必须是数字");
+            Alert("时空限制必须是数字");
             return;
         }
         const res = await api.add(domainID, {
@@ -98,13 +108,17 @@ const ProblemEdit = () => {
             outputFormat,
             pub: pub,
             other,
+            testCases,
+            judgeType,
+            specialCode,
         });
         if (res.success) {
             navigate("/problems");
         } else {
-            alert(res.msg);
+            Alert(res.msg);
         }
     }
+
     const handleRemove = async () => {
         const res = await api.remove(domainID, problemID);
         if (res.success) {
@@ -113,87 +127,116 @@ const ProblemEdit = () => {
     }
 
     return (
-        <div className="flex w-3/5 h-full justify-start  flex-col gap-3 animate__slideInBottom">
-            <label>
-                <Header>标题</Header>
-                <Input value={title} onChange={setTitle} className={`h-15`} />
-            </label>
-            {/* <label>
+        <>
+            <Toy />
+            <div className="bg-white flex w-3/5 h-full justify-start  flex-col gap-3 animate__slideInBottom">
+                <label>
+                    <Header>标题</Header>
+                    <Input value={title} onChange={setTitle} className={`h-15`} />
+                </label>
+                {/* <label>
                 <Header>标签</Header>
                 <Input />
             </label> */}
-            <div className="flex gap-3">
-                <label className="flex-1 flex flex-col">
-                    <Header>难度</Header>
-                    <Select selectedValue={diff} entries={[
-                        ["暂不设置", 0],
-                        [diff2text(1), 1],
-                        [diff2text(2), 2],
-                        [diff2text(3), 3],
-                    ]} onChange={(str) => setDiff(parseInt(str))} className="flex-1" />
-                </label>
-                <label className="flex-1 flex flex-col">
-                    <Header>公开状态</Header>
-                    <Select selectedValue={pub} entries={[
-                        ["私有", false],
-                        ["公开", true],
-                    ]} onChange={
-                        (str) => { if (str === "true") { setPublic(true) } else { setPublic(false) } }
-                    } className="flex-1" />
-                </label>
-                <label className="flex-1">
-                    <Header>时间限制(MS)</Header>
-                    <Input value={timeLimit} onChange={setTimeLimit} />
-                </label>
-                <label className="flex-1">
-                    <Header>内存限制(MB)</Header>
-                    <Input value={memoryLimit} onChange={setMemoryLimit} />
-                </label>
-            </div>
-            <div className="flex flex-col gap-3">
-                <div>
-                    <Header>题目描述</Header>
-                    <RichTextEditor onChange={setDesc} value={desc} />
+                <div className="flex gap-3">
+                    <label className="flex-1 flex flex-col">
+                        <Header>难度</Header>
+                        <Select selectedValue={diff} entries={[
+                            ["暂不设置", 0],
+                            [diff2text(1), 1],
+                            [diff2text(2), 2],
+                            [diff2text(3), 3],
+                        ]} onChange={(str) => setDiff(parseInt(str))} className="flex-1" />
+                    </label>
+                    <label className="flex-1 flex flex-col">
+                        <Header>公开状态</Header>
+                        <Select selectedValue={pub} entries={[
+                            ["私有", false],
+                            ["公开", true],
+                        ]} onChange={
+                            (str) => { if (str === "true") { setPublic(true) } else { setPublic(false) } }
+                        } className="flex-1" />
+                    </label>
+                    <label className="flex-1">
+                        <Header>时间限制(MS)</Header>
+                        <Input value={timeLimit} onChange={setTimeLimit} />
+                    </label>
+                    <label className="flex-1">
+                        <Header>内存限制(MB)</Header>
+                        <Input value={memoryLimit} onChange={setMemoryLimit} />
+                    </label>
                 </div>
-                <div>
-                    <Header>输入格式</Header>
-                    <RichTextEditor onChange={setInputFormat} value={inputFormat} />
-                </div>
-                <div>
-                    <Header>输出格式</Header>
-                    <RichTextEditor onChange={setOutputFormat} value={outputFormat} />
-                </div>
-                <div className="flex flex-col">
-                    <Header>测试用例</Header>
-                    {problemID !== null && samples.map((sample, idx) => (
-                        <div key={idx}>
-                            <div className="flex gap-4 w-full">
-                                <label className="flex-1">
-                                    <div className="text-lg">Input#{idx + 1}</div>
-                                    <Textarea onChange={(val) => handleSampleChange(idx, "input", val)} value={sample.input} />
-                                </label>
-                                <label className="flex-1">
-                                    <div className="text-lg">Output#{idx + 1}</div>
-                                    <Textarea onChange={(val) => handleSampleChange(idx, "output", val)} value={sample.output} />
-                                </label>
-                            </div>
-                        </div>
-                    ))}
+                <div className="flex flex-col gap-3">
                     <div>
-                        <button className="border p-2 text-lg bg-green-400 hover:bg-green-500 text-white rounded-lg" onClick={handleAddSample}>添加样例数据</button>
+                        <Header>题目描述</Header>
+                        <RichTextEditor onChange={setDesc} value={desc} />
+                    </div>
+                    <div>
+                        <Header>输入格式</Header>
+                        <RichTextEditor onChange={setInputFormat} value={inputFormat} />
+                    </div>
+                    <div>
+                        <Header>输出格式</Header>
+                        <RichTextEditor onChange={setOutputFormat} value={outputFormat} />
+                    </div>
+
+
+                    <div className="flex flex-col">
+                        <Header>测试用例
+                            {judgeType === 0 && <Button type="primary" onClick={setJudgeType.bind(null, 1)}>改为special judge</Button>}
+                            {judgeType === 1 && <Button type="primary" onClick={setJudgeType.bind(null, 0)}>改为普通judge</Button>}
+                        </Header>
+                        {judgeType === 1 &&
+                            <>
+                                <Header>Special 判题代码(Python)</Header>
+                                <CodeEditor readonly={false} code={specialCode} onChange={setSpecialCode} />
+                            </>
+                        }
+                        {testCases.map((testCase, idx) => (
+                            <div className="mt-5" key={idx}>
+                                <div className="flex gap-4 w-full ">
+                                    <label className="flex-1">
+                                        <div>
+                                            <span className="text-lg">Input#{idx + 1}</span>
+                                            {testCase.isSample === true && <span className="bg-green-400 text-white p-1 rounded-sm">样例</span>}
+                                        </div>
+                                        <Textarea onChange={(val) => handleTestCaseChange(idx, "input", val)} value={testCase.input} />
+                                    </label>
+                                    <label className="flex-1">
+                                        <div>
+                                            <span className="text-lg">Output#{idx + 1}</span>
+                                            {testCase.isSample === true && <span className="bg-green-400 text-white p-1 rounded-sm">样例</span>}
+                                        </div>
+                                        <Textarea onChange={(val) => handleTestCaseChange(idx, "expect", val)} value={testCase.expect} />
+                                    </label>
+                                    <div className="flex p-1 gap-2">
+                                        {testCase.isSample ?
+                                            <Button className="h-full" onClick={handleSetSample.bind(null, idx, false)}>撤下样例</Button>
+                                            :
+                                            <Button className="h-full" onClick={handleSetSample.bind(null, idx, true)}>设为样例</Button>
+                                        }
+                                        <Button type="danger" className="h-full" onClick={handleRemoveTestCase.bind(null, idx)}>移除</Button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                        <div>
+                            <Button onClick={handleAddTestCase} type="success">添加样例数据</Button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div>
-                <Header>其他</Header>
-                <RichTextEditor value={other} onChange={setOther} />
-            </div>
-            <div className="flex justify-center gap-2">
-                <button onClick={handleSubmit} className="text-lg border rounded-md p-1 text-white hover:bg-green-500 bg-green-400">提交</button>
-                <button onClick={() => navigate("/problems")} className="text-lg border rounded-md p-1 hover:bg-slate-100">取消</button>
-                {problemID !== null && <button onClick={handleRemove} className="text-lg border rounded-md p-1 hover:bg-red-500 bg-red-400 text-white">删除</button>}
-            </div>
-        </div>
+                <div>
+                    <Header>其他</Header>
+                    <RichTextEditor value={other} onChange={setOther} />
+                </div>
+                <div className="flex justify-center gap-2">
+                    <Button onClick={handleSubmit} type="success">提交</Button>
+                    <Button onClick={() => navigate("/problems")}>取消</Button>
+                    {problemID !== null && <Button onClick={handleRemove} type="danger">删除</Button>}
+                </div>
+            </div >
+        </>
+
     )
 }
 export default ProblemEdit;

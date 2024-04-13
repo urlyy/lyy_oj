@@ -1,4 +1,7 @@
-import { read, writeFile, utils } from 'xlsx';
+// import { read, writeFile, utils } from 'xlsx';
+
+import { read, writeFile, utils } from 'xlsx-js-style';
+
 
 
 export const readExcel = (file) => {
@@ -22,11 +25,9 @@ export const readExcel = (file) => {
     });
 }
 
-export const dumpExcel = (data, filename) => {
-    const ws = utils.json_to_sheet(data);
+export const dumpExcel = (data, header, filename) => {
+    const ws = utils.json_to_sheet(data, { header: header });
     const wb = utils.book_new();
     utils.book_append_sheet(wb, ws, "Data");
     writeFile(wb, `${filename}.xlsx`);
 }
-
-

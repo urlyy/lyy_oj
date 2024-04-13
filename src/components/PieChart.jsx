@@ -1,13 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 import * as echarts from 'echarts';
 
-const PieChart = () => {
+const PieChart = ({ data }) => {
     const chartRef = useRef(null);
 
     useEffect(() => {
         const chartDom = chartRef.current;
         const myChart = echarts.init(chartDom);
-
         const option = {
             tooltip: {
                 trigger: 'item'
@@ -47,24 +46,16 @@ const PieChart = () => {
                     labelLine: {
                         show: false
                     },
-                    data: [
-                        { value: 1048, name: '已通过' },
-                        { value: 735, name: '答案错误' },
-                        { value: 580, name: '运行超时' },
-                        { value: 484, name: '内存超限' },
-                        { value: 300, name: '编译错误' }
-                    ]
+                    data: data
                 }
             ]
         };
-
         option && myChart.setOption(option);
-
         // Ensure the chart is disposed when the component is unmounted
         return () => {
             myChart.dispose();
         };
-    }, []); // Run only once on mount
+    }, [data]);
 
     return <div ref={chartRef} style={{ display: "flex", justifyContent: "center", width: '100%', aspectRatio: "1/1" }}></div>;
 };

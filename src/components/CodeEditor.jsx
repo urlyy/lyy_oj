@@ -2,15 +2,9 @@ import { useCodeMirror } from '@uiw/react-codemirror';
 import { langs } from '@uiw/codemirror-extensions-langs';
 import { useRef, useEffect, useState } from 'react';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
-import CodeMirror from '@uiw/react-codemirror';
 
 
-// Define the extensions outside the component for the best performance.
-// If you need dynamic extensions, use React.useMemo to minimize reference changes
-// which cause costly re-renders.
-
-
-const CodeEditor = ({ code, readonly = true, onChange }) => {
+const CodeEditor = ({ code, readonly = true, onChange, className = "text-lg" }) => {
     const editor = useRef();
     // const extensions = [langs.java(), langs.cpp(), langs.python()];
     const extensions = [langs.cpp()];
@@ -24,6 +18,10 @@ const CodeEditor = ({ code, readonly = true, onChange }) => {
         onChange: (val) => { onChange(val); },
         placeholder: "在这里写入代码",
         editable: !readonly,
+        placeholder: `def judge(lines)->bool:  
+    for line in lines:
+        pass
+    return True  `
     });
 
     useEffect(() => {
@@ -32,7 +30,7 @@ const CodeEditor = ({ code, readonly = true, onChange }) => {
         }
     }, [editor.current]);
 
-    return <div className={'flex w-full h-full text-xl '} ref={editor} />;
+    return <div className={`flex w-full h-full ${className}`} ref={editor} />;
 }
 
 export default CodeEditor;

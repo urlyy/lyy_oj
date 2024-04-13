@@ -1,14 +1,13 @@
 import Card from '../../components/Card'
-import { useState, useEffect } from "react"
 import RichTextEditor from '@/components/RichTextEditor';
-
+import domainStore from '@/store/domain';
 
 const Recommend = () => {
-    const [content, setContent] = useState("推荐哦");
+    const { recommend } = domainStore();
     return (
         <div className="mb-5">
             <Card title={"推荐"}>
-                <RichTextEditor value={content} readonly={true} />
+                {recommend && <RichTextEditor value={recommend} readonly={true} />}
             </Card>
         </div>
     )

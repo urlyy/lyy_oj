@@ -4,6 +4,7 @@ import domainStore from "@/store/domain";
 import userStore from "@/store/user";
 import api from "./api";
 import { useNavigate } from "react-router-dom";
+import Button from "@/components/Button";
 const Domains = () => {
     const navigate = useNavigate();
     const [domains, setDomains] = useState([]);
@@ -25,9 +26,9 @@ const Domains = () => {
         logout();
     }
     return (
-        <div className="w-3/5 h-full flex animate__slideInBottom">
+        <div className="bg-white w-3/5 h-full flex animate__slideInBottom">
             <Card className={"flex-1 mt-3"} title={"域列表"} rightHeader={
-                <button onClick={handleLogout} className="border p-1 text-lg rounded-md hover:bg-slate-100">登出</button>
+                <Button onClick={handleLogout} >登出</Button>
             }>
                 <div className="grid grid-cols-5 w-full gap-4">
                     {domains.map((domain, idx) => (

@@ -3,6 +3,8 @@ import Input from "@/components/Input";
 import { useState, useNavigate } from "react";
 import api from "./api";
 import userStore from "@/store/user";
+import Alert from "@/utils/alert";
+import Toast from "@/utils/toast";
 
 const Button = ({ children, onClick = () => { } }) => {
     return (
@@ -17,16 +19,16 @@ const PasswordChangeForm = () => {
     const [passwordConfirm, setPasswordConfirm] = useState("");
     const handleSubmit = async () => {
         if (oldPassword === "" || password === "" || passwordConfirm === "") {
-            alert("不能为空");
+            Alert("不能为空");
             return;
         }
         if (password !== passwordConfirm) {
-            alert("两次密码不一致");
+            Alert("两次密码不一致");
             return;
         }
         const res = await api.changePassword(oldPassword, password);
         if (res.success) {
-            alert("修改成功，请重新登录");
+            Alert("修改成功，请重新登录");
             logout();
         }
     }

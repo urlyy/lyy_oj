@@ -1,9 +1,10 @@
 import request from "@/utils/request";
+import { Form } from "../../../node_modules/react-router-dom/dist/index";
 
 const api = {
-    changeProfile: async (domainID, name, announce) => {
+    changeProfile: async (domainID, name, announce, recommend) => {
         const res = await request.postBody(`/domain/${domainID}/profile`, {
-            announce, name
+            announce, name, recommend
         })
         return res;
     },
@@ -11,8 +12,8 @@ const api = {
         const res = await request.get(`/domain/${domainID}`)
         return res;
     },
-    getUsers: async (domainID) => {
-        const res = await request.get(`/domain/${domainID}/user`)
+    getUsers: async (domainID, page, username, trueID) => {
+        const res = await request.get(`/domain/${domainID}/users`, { page, username, trueID })
         return res;
     },
     getRoles: async (domainID) => {
@@ -44,8 +45,18 @@ const api = {
         const res = await request.postParam(`domain/${domainID}/role/${roleID}/permission/${bit}/${havePermission}`);
         return res;
     },
-    getAllUsers: async (keyword = "", trueID = "", school = "", curPage) => {
-        const res = await request.get(`/user`, { page: curPage, keyword, trueID, school });
+    getAllUsers: async (username = "", trueID = "", school = "", curPage) => {
+        const res = await request.get(`/user/list`, { page: curPage, username, trueID, school });
+        return res;
+    },
+    addUser2Domain: async (domainID, userID) => {
+        const res = await request.postBody(`/domain/${domainID}/user/${userID}`);
+        return res;
+    },
+    sendNotification: async (domainID, msg) => {
+        const form = new FormData();
+        form.append("msg", msg);
+        const res = await request.postForm(`/sse/${domainID}/notify`, form);
         return res;
     }
 

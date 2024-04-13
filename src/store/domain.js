@@ -11,7 +11,10 @@ const domainStore = create(set => ({
     id: domain ? domain.id : null,
     name: domain ? domain.name : null,
     announce: domain ? domain.announce : null,
+    recommend: domain ? domain.recommend : null,
     permission: domain ? domain.permission : null,
+    ownerID: domain ? domain.ownerID : null,
+
     set: (domain) => set(state => {
         localStorage.setItem("domain", JSON.stringify(domain));
         return ({
@@ -19,6 +22,8 @@ const domainStore = create(set => ({
             name: domain.name,
             announce: domain.announce,
             permission: domain.permission,
+            recommend: domain.recommend,
+            ownerID: domain.ownerID,
         })
     }),
     setName: (newName) => set(prev => ({ ...prev, name: newName })),
@@ -28,7 +33,9 @@ const domainStore = create(set => ({
             id: null,
             name: null,
             announce: null,
-            permissions: null,
+            permission: null,
+            recommend: null,
+            ownerID: null,
         })
     }),
 }))

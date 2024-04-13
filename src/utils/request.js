@@ -1,5 +1,7 @@
 //1、引入axios
 import axios from "axios";
+import Toast from "./toast";
+import Alert from "./alert";
 
 //2、创建axios的实例
 let instance = axios.create({
@@ -25,18 +27,13 @@ instance.interceptors.request.use(
 //4、axios的拦截--response
 instance.interceptors.response.use(
     (response) => {
-        // console.log("拦截器拦下来了");
-        // if (response.data.code === SUCCESS) {
-        //     // console.log("请求成功");
-        // } else {
-        //     console.log(response.data.message);
-        // }
-
         const data = response.data;
         if (data.success === false) {
             console.error(response.config.url, data.msg);
+            Toast(data.msg, "error");
             if (data.msg === "请重新登录!") {
-                alert("登录凭证已过期,请保存当前正编写的代码,并手动重新登录!");
+                Alert("登录凭证已过期,请保存当前正编写的代码,并手动重新登录!");
+                return;
             }
         }
         return data;

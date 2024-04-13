@@ -51,7 +51,7 @@ const UserManage = ({ }) => {
                 "邮箱": u[2],
                 "密码": u[3],
             }));
-            dumpExcel(users, "用户数据");
+            dumpExcel(users, ["学号/工号", "用户名", "邮箱", "密码", "用户数据"], "新用户数据");
         } else {
             alert("创建失败");
         }

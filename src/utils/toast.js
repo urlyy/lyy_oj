@@ -1,19 +1,19 @@
 import { toast } from 'react-toastify';
 
-
-
-const customToast = (type, message) => {
+const Toast = (message, type = "info", position = "top-center", autoClose = true, className = "") => {
     if (!["info", "success", "error", "warning"].includes(type)) {
         throw new Error("toast type must be one of 'info','success','error','warning'");
     }
     const options = {
         type: type,
-        position: "top-center",
-        autoClose: 500,
+        position: position,
+        autoClose: autoClose ? type === "success" ? 250 : 1000 : false,
         hideProgressBar: true,
+        className: className,
         closeOnClick: true,
+        theme: "colored",
     }
-    toast(message, options)
+    toast(message, options);
 }
 
-export default customToast;
+export default Toast;

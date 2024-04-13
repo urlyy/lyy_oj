@@ -10,6 +10,7 @@ import { str2date, str2time } from "@/utils/data2text";
 import Pagination from "@/components/Pagination";
 import Modal from "@/components/Modal";
 import ProblemTable from "@/components/ProblemTable";
+import Alert from "@/utils/alert";
 
 const Header = ({ children }) => {
     return (
@@ -24,7 +25,7 @@ const ContestEdit = () => {
     const [title, setTitle] = useState("");
     const [desc, setDesc] = useState("");
     const [pub, setPublic] = useState(false);
-    const [type, setType] = useState("OI");
+    const [type, setType] = useState(null);
     const [startDate, setStartDate] = useState("");
     const [startTime, setStartTime] = useState("");
     const [endDate, setEndDate] = useState("");
@@ -58,19 +59,22 @@ const ContestEdit = () => {
                     const contest = res.data.contest;
                     setTitle(contest.title);
                     setDesc(contest.desc);
-                    setPublic(contest.pub);
+                    setPublic(contest.public);
                     setStartDate(str2date(contest.startTime));
                     setStartTime(str2time(contest.startTime));
                     setEndDate(str2date(contest.endTime));
                     setEndTime(str2time(contest.endTime));
+                    setType(contest.type);
                     setSelectProblems(Array.from({ length: contest.problemIDs.length }).fill({}));
                     contest.problemIDs.forEach(async (id, idx) => {
                         const r = await api.getProblem(domainID, id);
                         if (r.success) {
                             const p = r.data.problem;
-                            const newProblems = [...problems];
-                            newProblems[idx] = p;
-                            setSelectProblems(newProblems);
+                            setSelectProblems(prev => {
+                                const newProblems = [...prev];
+                                newProblems[idx] = p;
+                                return newProblems;
+                            });
                         }
                     })
                 }
@@ -101,15 +105,15 @@ const ContestEdit = () => {
 
     const handleSubmit = async () => {
         if (title === "" || desc === "" || startDate === "" || startTime === "" || endDate === "" || endTime === "") {
-            alert("不能为空");
+            Alert("不能为空");
             return;
         }
         if (endDate < startDate) {
-            alert("结束时间不能早于开始时间");
+            Alert("结束时间不能早于开始时间");
             return;
         }
         if (endDate === startDate && endTime <= startDate) {
-            alert("结束时间不能早于开始时间");
+            Alert("结束时间不能早于开始时间");
             return;
         }
         const start = startDate + " " + startTime;
@@ -122,7 +126,7 @@ const ContestEdit = () => {
         if (res.success) {
             navigate("/contests");
         } else {
-            alert(res.msg)
+            Alert(res.msg)
         }
     }
 
@@ -133,9 +137,16 @@ const ContestEdit = () => {
         }
     }
 
+    const handleCancel = () => {
+        if (contestIDStr === null) {
+            navigate("/contests")
+        } else {
+            navigate(`/contest/${contestIDStr}`)
+        }
+    }
 
     return (
-        <div className="flex w-3/5 h-full justify-start  flex-col gap-3 animate__slideInBottom">
+        <div className="bg-white flex w-3/5 h-full justify-start  flex-col gap-3 animate__slideInBottom">
             <label>
                 <Header>测验标题</Header>
                 <Input value={title} onChange={setTitle} className={`h-15`} />
@@ -168,8 +179,8 @@ const ContestEdit = () => {
                 <label className="flex-1 flex flex-col">
                     <Header>计分方式</Header>
                     <Select entries={[
-                        ["OI", "OI"],
                         ["ACM", "ACM"],
+                        ["IOI", "IOI"],
                     ]} selectedValue={type} onChange={setType} className="flex-1" />
                 </label>
             </div>
@@ -201,7 +212,7 @@ const ContestEdit = () => {
             </div>
             <div className="flex justify-center gap-2">
                 <button onClick={handleSubmit} className="text-lg border rounded-md p-1 text-white hover:bg-green-500 bg-green-400">提交</button>
-                <button onClick={() => navigate("/contest")} className="text-lg border rounded-md p-1 hover:bg-slate-100">取消</button>
+                <button onClick={handleCancel} className="text-lg border rounded-md p-1 hover:bg-slate-100">取消</button>
                 {contestIDStr !== null && <button onClick={handleRemove} className="text-lg border rounded-md p-1 hover:bg-red-500 bg-red-400 text-white">删除</button>}
             </div>
         </div>
