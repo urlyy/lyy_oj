@@ -97,7 +97,7 @@ const Homeworks = () => {
     const RightHeader = () => {
         return (
             <>
-                {havePermission(permission, 创建作业) && <button onClick={() => { navigate("/homework/edit") }} className="border p-1 rounded-md text-white bg-green-500 hover:bg-green-600">新建作业</button>}
+                {havePermission(permission, 创建作业) && <button onClick={() => { navigate("/homework/edit") }} className="border p-1 rounded-md text-white bg-green-500 hover:bg-green-600">创建作业</button>}
             </>
         )
     }

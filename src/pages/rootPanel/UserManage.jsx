@@ -6,6 +6,7 @@ import Select from "@/components/Select";
 import userStore from "@/store/user";
 import Button from "@/components/Button";
 import { dumpExcel, readExcel } from "@/utils/excel";
+import Toast from "@/utils/toast";
 
 
 const UserManage = ({ }) => {
@@ -22,7 +23,7 @@ const UserManage = ({ }) => {
         const file = event.target.files[0];
         const rows = await readExcel(file);
         if (rows === null) {
-            alert("获取文件失败");
+            Toast("获取文件失败");
             return;
         }
 
@@ -44,7 +45,7 @@ const UserManage = ({ }) => {
         })
         const res = await api.createUser(data);
         if (res.success) {
-            alert("创建成功，请等待用户数据文件下载");
+            Toast("创建成功，请等待用户数据文件下载");
             const users = res.data.users.map(u => ({
                 "学号/工号": u[0],
                 "用户名": u[1],
@@ -52,8 +53,6 @@ const UserManage = ({ }) => {
                 "密码": u[3],
             }));
             dumpExcel(users, ["学号/工号", "用户名", "邮箱", "密码", "用户数据"], "新用户数据");
-        } else {
-            alert("创建失败");
         }
         //手动清理
         event.target.value = null;

@@ -1,18 +1,12 @@
 # TODO
 - 把表单加上label
 - 表单正则
-- 复用同一个的Button
 - 把所有的path上的id改成Str后缀
 - 判题机
 - 切出网站管理
-- 权限
-- 根据excel导入用户
-    - 注册时不以@xx.com结尾，但是修改时必须要求
-- 单点登录
-- 把select的setValue改为parseint
+- 根据excel导入用户,此时不以@xx.com结尾，但是修改时必须要求
 - 将列数未知的grid改成table
-- 重新判题
-- 富文本的判定 <p></p>，需要用getText
+- 富文本的空内容判定 <p></p>，需要用getText
 
 # Getting Started with Create React App
 

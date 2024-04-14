@@ -11,6 +11,9 @@ import Pagination from "@/components/Pagination";
 import Modal from "@/components/Modal";
 import ProblemTable from "@/components/ProblemTable";
 import Alert from "@/utils/alert";
+import Button from "@/components/Button";
+import Toast from "@/utils/toast";
+import ProblemSelectModal from "@/components/ProblemSelectModal";
 
 const Header = ({ children }) => {
     return (
@@ -35,20 +38,14 @@ const ContestEdit = () => {
     const [problems, setProblems] = useState([]);
     const [curPage, setCurPage] = useState(1);
     const [pageNum, setPageNum] = useState(1);
-
     const { problemID: problemIDStr = null } = useParams();
 
-
-    useEffect(() => {
-        if (contestIDStr !== null) {
-
-        }
-    }, [])
-    const handleGetProblems = async (page = 1) => {
-        setCurPage(page);
-        const res = await api.listProblem(domainID, page);
+    const handleGetProblems = async (newPage) => {
+        setCurPage(newPage);
+        const res = await api.listProblem(domainID, newPage);
         if (res.success) {
-            setProblems(res.data.problems);
+            const { problems } = res.data;
+            setProblems(problems);
         }
     }
     useEffect(() => {
@@ -85,21 +82,14 @@ const ContestEdit = () => {
     const handleChangePage = (newPage) => {
         handleGetProblems(newPage);
     }
-    const handleSelectProblem = (id, title) => {
-        let exist = false;
-        for (let i = 0; i < selectProblems.length; i++) {
-            if (selectProblems[i].id === id) {
-                exist = true;
-                break;
-            }
-        }
-        if (!exist) {
-            setSelectProblems(prev => [...prev, { id, title }]);
-        }
-    }
+
 
     const handleRemoveProblem = (idx) => {
         setSelectProblems(prev => prev.filter((_, i) => i !== idx));
+    }
+
+    const handleSelectProblem = (id, title) => {
+        setSelectProblems(prev => [...prev, { id, title }]);
     }
 
 
@@ -124,6 +114,11 @@ const ContestEdit = () => {
             problemIDs: selectProblems.map(item => item.id),
         });
         if (res.success) {
+            if (contestIDStr === null) {
+                Toast("创建比赛成功");
+            } else {
+                Toast("修改比赛成功");
+            }
             navigate("/contests");
         } else {
             Alert(res.msg)
@@ -131,10 +126,14 @@ const ContestEdit = () => {
     }
 
     const handleRemove = async () => {
-        const res = await api.remove(domainID, contestIDStr);
-        if (res.success) {
-            navigate("/contests")
-        }
+        Alert("确认删除这个比赛吗?", <></>, async () => {
+            const res = await api.remove(domainID, contestIDStr);
+            if (res.success) {
+                Toast("删除比赛成功", "success");
+                navigate("/contests")
+            }
+        }, true)
+
     }
 
     const handleCancel = () => {
@@ -195,25 +194,20 @@ const ContestEdit = () => {
                         {selectProblems.map((problem, idx) => (
                             <div key={idx} className="flex gap-2 items-center text-lg">
                                 <span>{idx + 1}.{problem.title}</span>
-                                <button onClick={handleRemoveProblem.bind(null, idx)} className="text-red-400 hover:text-red-500 ">移除</button>
+                                <button onClick={() => { handleRemoveProblem(idx); Toast("移除成功", "success") }} className="text-red-400 hover:text-red-500 ">移除</button>
                             </div>
                         ))}
                     </div>
                     <div>
                         <button className="border p-1 text-lg bg-green-400 hover:bg-green-500 text-white rounded-lg" onClick={setShowSelectModal.bind(null, true)}>添加题目</button>
                     </div>
-                    {showSelectModal && <Modal onClose={setShowSelectModal.bind(null, false)}>
-                        <ProblemTable onClick={handleSelectProblem} data={problems} />
-                        <div className="border">
-                            <Pagination onChange={handleChangePage} current={curPage} pageNum={pageNum} />
-                        </div>
-                    </Modal>}
+                    {showSelectModal && <ProblemSelectModal onAdd={handleSelectProblem} alreadyIn={selectProblems.map((item) => item.id)} onClose={setShowSelectModal.bind(null, false)} />}
                 </div>
             </div>
             <div className="flex justify-center gap-2">
-                <button onClick={handleSubmit} className="text-lg border rounded-md p-1 text-white hover:bg-green-500 bg-green-400">提交</button>
-                <button onClick={handleCancel} className="text-lg border rounded-md p-1 hover:bg-slate-100">取消</button>
-                {contestIDStr !== null && <button onClick={handleRemove} className="text-lg border rounded-md p-1 hover:bg-red-500 bg-red-400 text-white">删除</button>}
+                <Button type="success" onClick={handleSubmit} >提交</Button>
+                <Button onClick={handleCancel} >取消</Button>
+                {contestIDStr !== null && <Button type="danger" onClick={handleRemove} >删除</Button>}
             </div>
         </div>
     )

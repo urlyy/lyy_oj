@@ -17,16 +17,13 @@ const Filter = ({ onFilter, keyword, onKeywordChange, diff, onDiffChange }) => {
     const navigate = useNavigate();
     const { permission } = domainStore();
 
-    const handleFilter = async () => {
-        const res = await onFilter();
-        if (res) Toast("过滤题目成功", "success");
-    }
+
 
     const RightHeader = () => {
         return (
             <div className="flex gap-2">
                 {havePermission(permission, 创建题目) && <button onClick={() => navigate(`/problem/edit`)} className="border p-1 rounded-md text-white bg-green-500 hover:bg-green-600">创建题目</button>}
-                <button onClick={handleFilter} className="border p-1 rounded-md text-white bg-blue-400 hover:bg-blue-500">过滤</button>
+                <button onClick={onFilter} className="border p-1 rounded-md text-white bg-blue-400 hover:bg-blue-500">过滤</button>
             </div>
         )
     }
@@ -75,10 +72,15 @@ const Problems = () => {
     useEffect(() => {
         handleGetProblems(1);
     }, [])
+    const handleFilter = async () => {
+        setCurPage(1);
+        const res = await handleGetProblems(1);
+        if (res) Toast("过滤题目成功", "success");
+    }
     return (
         <div className="bg-white flex h-full w-3/5 justify-center animate__slideInBottom">
             <div className="h-full w-full flex flex-col">
-                <Filter onFilter={handleGetProblems.bind(null, 1)} keyword={keyword} diff={diff} onDiffChange={setDiff} onKeywordChange={setKeyword} />
+                <Filter onFilter={handleFilter} keyword={keyword} diff={diff} onDiffChange={setDiff} onKeywordChange={setKeyword} />
                 <ProblemTable data={problems} />
                 <Pagination onChange={(newPage) => { handleGetProblems(newPage) }} current={curPage} pageNum={pageNum} />
             </div >

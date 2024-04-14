@@ -1,5 +1,4 @@
 import request from "@/utils/request";
-import { Form } from "../../../node_modules/react-router-dom/dist/index";
 
 const api = {
     changeProfile: async (domainID, name, announce, recommend) => {
@@ -24,10 +23,10 @@ const api = {
         const res = await request.postBody(`/domain/${domainID}/user/role`, { userIDs, roleID });
         return res;
     },
-    // removeRole: async (domainID, roleID) => {
-    //     const res = await request.delete(`/domain/${domainID}/role/${roleID}`);
-    //     return res;
-    // },
+    removeRole: async (domainID, roleID) => {
+        const res = await request.delete(`/domain/${domainID}/role/${roleID}`);
+        return res;
+    },
     removeUsers: async (domainID, userIDs) => {
         const res = await request.postBody(`/domain/${domainID}/user/delete`, { userIDs });
         return res;
@@ -45,8 +44,8 @@ const api = {
         const res = await request.postParam(`domain/${domainID}/role/${roleID}/permission/${bit}/${havePermission}`);
         return res;
     },
-    getAllUsers: async (username = "", trueID = "", school = "", curPage) => {
-        const res = await request.get(`/user/list`, { page: curPage, username, trueID, school });
+    getAllUsers: async (domainID, username = "", trueID = "", school = "", curPage) => {
+        const res = await request.get(`/user/list`, { page: curPage, username, trueID, school, d: domainID });
         return res;
     },
     addUser2Domain: async (domainID, userID) => {

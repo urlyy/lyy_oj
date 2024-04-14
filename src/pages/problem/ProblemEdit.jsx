@@ -12,6 +12,7 @@ import { diff2text } from "@/utils/data2text";
 import CodeEditor from "@/components/CodeEditor";
 import Toy from "@/components/Toy";
 import Alert from "@/utils/alert";
+import Toast from "@/utils/toast";
 
 const Header = ({ children }) => {
     return (
@@ -59,7 +60,7 @@ const ProblemEdit = () => {
                 }
             });
         }
-    }, [])
+    }, [problemID, domainID])
     const handleAddTestCase = () => {
         const data = {
             input: "",
@@ -120,10 +121,13 @@ const ProblemEdit = () => {
     }
 
     const handleRemove = async () => {
-        const res = await api.remove(domainID, problemID);
-        if (res.success) {
-            navigate("/problems")
-        }
+        Alert("确定删除本题目吗?", <></>, async () => {
+            const res = await api.remove(domainID, problemID);
+            if (res.success) {
+                Toast("删除成功", "success");
+                navigate("/problems")
+            }
+        }, true)
     }
 
     return (

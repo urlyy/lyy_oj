@@ -86,9 +86,7 @@ const ForgetPassForm = ({ onToggle }) => {
         }
         const res = await api.sendForgetPasswordCaptcha(email);
         if (res.success) {
-            Toast("发送成功");
-        } else {
-            Alert(res.msg);
+            Toast("发送成功，请前往邮箱查看验证码", "success");
         }
     }
     const submit = async () => {
@@ -100,6 +98,11 @@ const ForgetPassForm = ({ onToggle }) => {
             Alert("两次密码不一致");
             return;
         }
+        const res = await api.forgetPass(email, captcha, password);
+        if (res.success) {
+            Toast("重置密码成功", "success");
+            onToggle("login")
+        }
     }
     return (
         <>
@@ -110,7 +113,7 @@ const ForgetPassForm = ({ onToggle }) => {
                 <Input isPassword={true} value={passwordConfirm} onChange={setPasswordConfirm} label={"密码确认"} />
                 <div className='flex'>
                     <div className='w-2/3'>
-                        <Input isPassword={true} value={captcha} onChange={setCaptcha} label={"验证码"} />
+                        <Input value={captcha} onChange={setCaptcha} label={"验证码"} />
                     </div>
                     <div className='w-1/3 flex items-end'>
                         <Button onClick={handelSendCaptcha}>发送验证码</Button>

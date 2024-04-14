@@ -5,19 +5,25 @@ import UserManage from './UserManage'
 import ProfileManage from './ProfileManage'
 import { useState } from "react"
 import NotificationManage from "./NotificationManage"
-
+import domainStore from "@/store/domain"
+import userStore from "@/store/user"
+import { useNavigate } from "react-router-dom";
 
 const DomainManage = () => {
+    const navigate = useNavigate();
     const [currentUrl, setCurrentUrl] = useState("域资料管理");
-    const menus =
-    {
+    const { id: myID } = userStore();
+    const { ownerID } = domainStore();
+    if (myID !== ownerID) {
+        navigate("");
+    }
+    const menus = {
         "域资料管理": <ProfileManage />,
         "用户管理": <UserManage />,
         "角色管理": <RoleManage />,
         "权限管理": <PermissionManage />,
         "通知管理": <NotificationManage />,
     }
-
 
     return (
         <div className="h-full gap-2 w-3/5 flex justify-center animate__slideInBottom">

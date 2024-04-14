@@ -12,6 +12,9 @@ import ProblemTable from "@/components/ProblemTable";
 import Pagination from "@/components/Pagination";
 import Card from "@/components/Card";
 import Alert from "@/utils/alert";
+import Toast from "@/utils/toast";
+import Button from "@/components/Button";
+import ProblemSelectModal from "@/components/ProblemSelectModal";
 
 const Header = ({ children }) => {
     return (
@@ -32,19 +35,8 @@ const HomeworkEdit = () => {
     const [endTime, setEndTime] = useState("");
     const [selectProblems, setSelectProblems] = useState([]);
     const [showSelectModal, setShowSelectModal] = useState(false);
-    const [problems, setProblems] = useState([]);
-    const [curPage, setCurPage] = useState(1);
-    const [pageNum, setPageNum] = useState(1);
 
-    const handleGetProblems = async (page = 1) => {
-        setCurPage(page);
-        const res = await api.listProblem(domainID, page);
-        if (res.success) {
-            setProblems(res.data.problems);
-        }
-    }
     useEffect(() => {
-        handleGetProblems(1);
         if (homeworkIDStr !== null) {
             api.get(domainID, homeworkIDStr).then(res => {
                 if (res.success) {
@@ -61,9 +53,11 @@ const HomeworkEdit = () => {
                         const r = await api.getProblem(domainID, id);
                         if (r.success) {
                             const p = r.data.problem;
-                            const newProblems = [...problems];
-                            newProblems[idx] = p;
-                            setSelectProblems(newProblems);
+                            setSelectProblems(prev => {
+                                const newProblems = [...prev];
+                                newProblems[idx] = p;
+                                return newProblems;
+                            });
                         }
                     })
                 }
@@ -71,20 +65,9 @@ const HomeworkEdit = () => {
         }
     }, [])
 
-    const handleChangePage = (newPage) => {
-        handleGetProblems(newPage);
-    }
+
     const handleSelectProblem = (id, title) => {
-        let exist = false;
-        for (let i = 0; i < selectProblems.length; i++) {
-            if (selectProblems[i].id === id) {
-                exist = true;
-                break;
-            }
-        }
-        if (!exist) {
-            setSelectProblems(prev => [...prev, { id, title }]);
-        }
+        setSelectProblems(prev => [...prev, { id, title }]);
     }
 
     const handleSubmit = async () => {
@@ -108,6 +91,11 @@ const HomeworkEdit = () => {
             start, end, problemIDs: selectProblems.map(item => item.id)
         });
         if (res.success) {
+            if (homeworkIDStr === null) {
+                Toast("创建作业成功");
+            } else {
+                Toast("修改作业成功");
+            }
             navigate("/homeworks");
         }
     }
@@ -116,10 +104,13 @@ const HomeworkEdit = () => {
     }
 
     const handleRemove = async () => {
-        const res = await api.remove(domainID, homeworkIDStr);
-        if (res.success) {
-            navigate("/homeworks")
-        }
+        Alert("确认删除这个作业吗?", <></>, async () => {
+            const res = await api.remove(domainID, homeworkIDStr);
+            if (res.success) {
+                Toast("删除作业成功", "success");
+                navigate("/homeworks")
+            }
+        }, true)
     }
 
     const handleCancel = () => {
@@ -172,25 +163,20 @@ const HomeworkEdit = () => {
                         {selectProblems.map((problem, idx) => (
                             <div key={idx} className="flex gap-2 items-center text-lg">
                                 <span>{idx + 1}.{problem.title}</span>
-                                <button onClick={handleRemoveProblem.bind(null, idx)} className="text-red-400 hover:text-red-500 ">移除</button>
+                                <button onClick={() => { handleRemoveProblem(idx); Toast("移除成功", "success") }} className="text-red-400 hover:text-red-500 ">移除</button>
                             </div>
                         ))}
                     </div>
                     <div>
                         <button className="border p-1 text-lg bg-green-400 hover:bg-green-500 text-white rounded-lg" onClick={setShowSelectModal.bind(null, true)}>添加题目</button>
                     </div>
-                    {showSelectModal && <Modal onClose={setShowSelectModal.bind(null, false)}>
-                        <ProblemTable onClick={handleSelectProblem} data={problems} />
-                        <div className="border">
-                            <Pagination onChange={handleChangePage} current={curPage} pageNum={pageNum} />
-                        </div>
-                    </Modal>}
+                    {showSelectModal && <ProblemSelectModal onAdd={handleSelectProblem} alreadyIn={selectProblems.map((item) => item.id)} onClose={setShowSelectModal.bind(null, false)} />}
                 </div>
             </div>
             <div className="flex justify-center gap-2">
-                <button onClick={handleSubmit} className="text-lg border rounded-md p-1 text-white hover:bg-green-500 bg-green-400">提交</button>
-                <button onClick={handleCancel} className="text-lg border rounded-md p-1 hover:bg-slate-100">取消</button>
-                {homeworkIDStr !== null && <button onClick={handleRemove} className="text-lg border rounded-md p-1 hover:bg-red-500 bg-red-400 text-white">删除</button>}
+                <Button type="success" onClick={handleSubmit} >提交</Button>
+                <Button onClick={handleCancel} className="text-lg border rounded-md p-1 hover:bg-slate-100">取消</Button>
+                {homeworkIDStr !== null && <Button onClick={handleRemove} type="danger">删除</Button>}
             </div>
         </div>
     )

@@ -102,7 +102,8 @@ const MiddleRecordsArea = ({ userID }) => {
     }
 
     const handleFilter = async () => {
-        const res = await handleGetRecords(curPage)
+        setCurPage(1);
+        const res = await handleGetRecords(1);
         if (res) {
             Toast("过滤成功", "success");
         }

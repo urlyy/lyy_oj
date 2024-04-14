@@ -62,20 +62,22 @@ const Nav = () => {
     }
 
     const navItems = () => {
-        const items = [
-            ['首页', handleNavigate.bind(null, "/")],
-            ['题库', handleNavigate.bind(null, `/problems`)],
-            ['作业', handleNavigate.bind(null, `/homeworks`)],
-            ['比赛', handleNavigate.bind(null, `/contests`)],
-            ['排名', handleNavigate.bind(null, `/rank`)],
-            ['判题记录', handleNavigate.bind(null, `/submissions`)],
-            ['讨论', handleNavigate.bind(null, '/discussions')],
-        ]
-        if (ownerID === userID) {
-            items.push(['管理当前域', handleNavigate.bind(null, '/admin')])
-        }
+        let items = [];
         if (domainName === "ROOT") {
             items.push(['root面板', handleNavigate.bind(null, '/root')])
+        } else {
+            items = [
+                ['首页', handleNavigate.bind(null, "/")],
+                ['题库', handleNavigate.bind(null, `/problems`)],
+                ['作业', handleNavigate.bind(null, `/homeworks`)],
+                ['比赛', handleNavigate.bind(null, `/contests`)],
+                ['排名', handleNavigate.bind(null, `/rank`)],
+                ['判题记录', handleNavigate.bind(null, `/submissions`)],
+                ['讨论', handleNavigate.bind(null, '/discussions')],
+            ]
+            if (ownerID === userID) {
+                items.push(['管理当前域', handleNavigate.bind(null, '/admin')])
+            }
         }
         return items;
     }

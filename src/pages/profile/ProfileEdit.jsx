@@ -59,10 +59,10 @@ const ProfileEdit = () => {
         <div className="bg-white flex flex-1 flex-col items-center  animate__slideInBottom">
             <div className="w-2/5 flex flex-col gap-2">
                 <div className="flex w-full gap-6">
-                    {/* <label className="flex-1">
+                    <label className="flex-1">
                         <div>用户名</div>
-                        <Input onChange={setTmpUsername} value={tmpUsername} />
-                    </label> */}
+                        <Input disabled={true} value={tmpUsername} />
+                    </label>
                     <CheckboxGroup
                         title={"性别"}
                         selectedValue={tmpGender}
@@ -79,7 +79,7 @@ const ProfileEdit = () => {
                 <div className="flex w-full gap-6">
                     <label className="flex-1">
                         <div>学校</div>
-                        <Input value={tmpSchool} onChange={setTmpSchool} />
+                        <Input onChange={setTmpSchool} value={tmpSchool} />
                     </label>
                     <label className="flex-1">
                         <div>个人网站</div>

@@ -98,14 +98,14 @@ const ProblemDetail = ({ onExpand, expand, situationID, situationType, onValidCh
     return (
         <div className="w-full h-full flex flex-col pl-5 pr-5 relative">
             <div className="absolute left-1 top-1 z-30">
-                <button onClick={handleBack} >
+                <button className="hover:text-blue-400" onClick={handleBack} >
                     返回
                 </button>
-                {havePermission(permission, 修改题目) && <button className="ml-3" onClick={() => { navigate(`/problem/edit/${problemID}`) }} >
+                {havePermission(permission, 修改题目) && <button className="ml-3 hover:text-blue-400" onClick={() => { navigate(`/problem/edit/${problemID}`) }} >
                     编辑
                 </button>}
             </div>
-            <button onClick={onExpand} className="absolute right-1 top-1 z-30">
+            <button onClick={onExpand} className="absolute right-1 top-1 z-30 hover:text-blue-400">
                 {expand === true ? "收起" : "打开在线编程模式"}
             </button>
             <h1 className="text-center text-3xl">{title}</h1>
@@ -113,7 +113,7 @@ const ProblemDetail = ({ onExpand, expand, situationID, situationType, onValidCh
                 <Tag>ID:{problemID}</Tag>
                 <Tag>时间限制:{timeLimit2text(timeLimit)}</Tag>
                 <Tag>内存限制:{memoryLimit / 1024}mb</Tag>
-                <Tag>{diff2text(diff)}</Tag>
+                {diff !== 0 && <Tag>{diff2text(diff)}</Tag>}
                 {judgeType === 1 && <Tag type="danger">Special</Tag>}
                 {!valid && <Tag type="danger">无测试数据</Tag>}
             </div>

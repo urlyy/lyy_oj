@@ -2,16 +2,18 @@ import Card from "@/components/Card"
 import PermissionManage from './PermissionManage'
 import UserManage from './UserManage'
 import DomainMange from './DomainMange'
+import ConfigManage from "./ConfigManage"
 import { useState } from "react"
 
 
 const RootPanel = () => {
-    const [currentUrl, setCurrentUrl] = useState("用户管理");
+    const [currentUrl, setCurrentUrl] = useState("域管理");
     const menus =
     {
         "域管理": <DomainMange />,
         "用户管理": <UserManage />,
         "权限管理": <PermissionManage />,
+        "配置管理": <ConfigManage />
     }
     return (
         <div className="h-full gap-2 w-3/5 flex justify-center animate__slideInBottom">
@@ -22,7 +24,6 @@ const RootPanel = () => {
                     )}
                 </ol>
             </div>
-
             <div className="w-4/5 ">
                 {menus[currentUrl]}
             </div>

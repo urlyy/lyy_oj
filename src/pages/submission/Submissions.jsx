@@ -24,14 +24,9 @@ const Filter = ({ onFilter, username, onUsernameChange, problemTitle, onProblemT
             }
         })
     }, [])
-    const handleFilter = async () => {
-        const res = await onFilter();
-        if (res) {
-            Toast('过滤成功');
-        }
-    }
+
     return (
-        <Card title={"过滤"} rightHeader={<Button type="primary" onClick={handleFilter}>过滤</Button>}>
+        <Card title={"过滤"} rightHeader={<Button type="primary" onClick={onFilter}>过滤</Button>}>
             <div className="flex gap-5">
                 <label className="flex-1">
                     <div>按用户名</div>
@@ -221,9 +216,16 @@ const Submissions = () => {
     useEffect(() => {
         handleGetSubmissions(1);
     }, [])
+    const handleFilter = async () => {
+        setCurPage(1);
+        const res = await handleGetSubmissions(1);
+        if (res) {
+            Toast('过滤成功');
+        }
+    }
     return (
         <div className="flex w-3/5 h-full flex-col animate__slideInBottom">
-            <Filter onFilter={handleGetSubmissions.bind(null, 1)} username={username} onUsernameChange={setUsername} compiler={compiler} onCompilerChange={setCompiler} status={status} onStatusChange={setStatus} problemTitle={problemTitle} onProblemTitleChange={setProblemTitle} />
+            <Filter onFilter={handleFilter} username={username} onUsernameChange={setUsername} compiler={compiler} onCompilerChange={setCompiler} status={status} onStatusChange={setStatus} problemTitle={problemTitle} onProblemTitleChange={setProblemTitle} />
             <SubmissionTable data={submissions} onChange={setSubmissions} />
             <Pagination onChange={(newPage) => handleGetSubmissions(newPage)} current={curPage} pageNum={pageNum} />
         </div>

@@ -1,33 +1,28 @@
 import { useNavigate } from 'react-router-dom'
 import { diff2text } from '@/utils/data2text';
 
-const ProblemTable = ({ data = [], onClick, situationType, situationID, className = "" }) => {
+const ProblemTable = ({ data = [], situationType, situationID, className = "" }) => {
     const navigate = useNavigate();
-    const handleClick = (id, title) => {
-        if (onClick) {
-            onClick(id, title);
+    const handleClick = (id) => {
+        if (situationType) {
+            navigate(`/problem/${id}/${situationType}/${situationID}`);
         } else {
-            if (situationType) {
-                navigate(`/problem/${id}/${situationType}/${situationID}`);
-            } else {
-                navigate(`/problem/${id}`);
-            }
-
+            navigate(`/problem/${id}`);
         }
     }
     return (
         <div className={`${className} grid grid-cols-4 border-l border-r border-t`}>
             <div className="col-span-4  border-b grid grid-cols-4">
-                <div className="p-1">序号</div>
-                <div className="p-1">题目</div>
+                <div className="p-1  text-center">编号</div>
+                <div className="p-1  text-center">题目</div>
                 <div className="p-1 text-center">AC/尝试</div>
                 <div className="p-1 text-center">难度</div>
             </div>
             {data.map((datum, idx) => (
                 <div key={idx} className="col-span-4 border-b grid grid-cols-4">
-                    <div className="p-1">{idx + 1}</div>
-                    <div onClick={() => handleClick(datum.id, datum.title)} className="hover:text-blue-400 cursor-pointer p-1">{datum.title}</div>
-                    <div className="p-1 text-center">{datum.ac}/{datum.submit}</div>
+                    <div className="p-1  text-center">{datum.id}</div>
+                    <div onClick={() => handleClick(datum.id)} className=" text-center hover:text-blue-400 cursor-pointer p-1">{datum.title}</div>
+                    <div className="p-1 text-center">{datum.acNum}/{datum.submitNum}</div>
                     {/* <div className="p-1 text-center">{datum.ac}/{datum.submit}</div> */}
                     <div className="p-1 text-center">{diff2text(datum.diff)}</div>
                 </div>

@@ -18,7 +18,6 @@ const RoleManage = ({ }) => {
     const [showCreateInput, setShowCreateInput] = useState(false);
     const [createRoleName, setCreateRoleName] = useState("");
     const [createRoleDesc, setCreateRoleDesc] = useState("");
-    const [excludeUsers, setExcludeUsers] = useState([]);
     useEffect(() => {
         api.getRoles(domainID).then(res => {
             if (res.success) {
@@ -28,14 +27,17 @@ const RoleManage = ({ }) => {
         })
     }, [])
 
-    // const handleRemove = async (selectIdx) => {
-    //     const role = roles[selectIdx];
-    //     const res = await api.removeRole(domainID, role.id);
-    //     if (res.success) {
-    //         alert("删除成功");
-    //         setRoles(prev => prev.filter((_, idx) => idx !== selectIdx))
-    //     }
-    // }
+    const handleRemove = async (idx) => {
+        Alert("确认删除该角色吗？", <>删除后,属于该角色的用户将分配为default角色</>, async () => {
+            const role = roles[idx];
+            const res = await api.removeRole(domainID, role.id);
+            if (res.success) {
+                Toast("删除成功");
+                setRoles(prev => prev.filter((_, idx1) => idx1 !== idx))
+            }
+        }, true)
+
+    }
     const handleStartEdit = (idx) => {
         setEditedIdx(idx);
         setEditRoleName(roles[idx].name);
@@ -99,8 +101,10 @@ const RoleManage = ({ }) => {
                                     <td className="p-1 text-center">{role.name}</td>
                                     <td className="p-1 text-center">{role.desc}</td>
                                     <td className="flex justify-center">
-                                        {role.domainID !== 0 && <Button type="primary" onClick={handleStartEdit.bind(null, idx)}>编辑</Button>}
-                                        {/* <Button type="danger" onClick={handleRemove.bind(null, idx)}>删除</Button> */}
+                                        {role.domainID !== 0 && <>
+                                            <Button type="primary" onClick={handleStartEdit.bind(null, idx)}>编辑</Button>
+                                            <Button type="danger" onClick={handleRemove.bind(null, idx)}>删除</Button>
+                                        </>}
                                     </td>
                                 </> :
                                 < >

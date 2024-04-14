@@ -9,16 +9,10 @@ import Toast from "@/utils/toast";
 import { useNavigate } from "react-router-dom";
 
 const Filter = ({ username, onUsernameChange, onFilter }) => {
-    const handleFilter = async () => {
-        const res = await onFilter();
-        if (res) {
-            Toast("过滤排名数据成功", "success");
-        }
-    }
 
 
     return (
-        <Card title={"过滤"} rightHeader={<Button type="primary" onClick={handleFilter}>过滤</Button>}>
+        <Card title={"过滤"} rightHeader={<Button type="primary" onClick={onFilter}>过滤</Button>}>
             <div className="flex gap-5">
                 <label className="">
                     <div>按用户名</div>
@@ -77,9 +71,16 @@ const Rank = () => {
     useEffect(() => {
         handleGetRank(1);
     }, [])
+    const handleFilter = async () => {
+        setCurPage(1);
+        const res = await handleGetRank(1);
+        if (res) {
+            Toast("过滤排名数据成功", "success");
+        }
+    }
     return (
         <div className="flex w-3/5 h-full flex-col animate__slideInBottom">
-            <Filter onFilter={handleGetRank.bind(null, 1)} username={filterUsername} onUsernameChange={setFilterUsername} />
+            <Filter onFilter={handleFilter} username={filterUsername} onUsernameChange={setFilterUsername} />
             <RankTable data={rankData} pageNum={pageNum} pageSize={pageSize.current} />
             <Pagination current={curPage} pageNum={pageNum} />
         </div>

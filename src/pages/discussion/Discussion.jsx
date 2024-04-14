@@ -199,10 +199,13 @@ const Discussion = () => {
     }, []);
 
     const handleRemove = async () => {
-        const res = await api.remove(domainID, discussionID);
-        if (res.success) {
-            navigate("/discussions")
-        }
+        Alert("确定删除这个讨论吗?", <></>, async () => {
+            const res = await api.remove(domainID, discussionID);
+            if (res.success) {
+                Toast("删除讨论成功", "success");
+                navigate("/discussions");
+            }
+        }, true)
     }
 
     return (

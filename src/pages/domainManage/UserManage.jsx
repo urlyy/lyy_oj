@@ -10,8 +10,9 @@ import Input from "@/components/Input";
 import { gender2text } from "@/utils/data2text";
 import Pagination from "@/components/Pagination";
 import Toast from "@/utils/toast";
+import Alert from "@/utils/alert";
 
-const AddUserModal = ({ onClose }) => {
+const AddUserModal = ({ onClose, onAdd }) => {
     const [curPage, setCurPage] = useState(1);
     const [pageNum, setPageNum] = useState(1);
     const [searchUsername, setSearchUsername] = useState("");
@@ -22,7 +23,7 @@ const AddUserModal = ({ onClose }) => {
 
     const handleSearchUsers = async (newPage) => {
         setCurPage(newPage);
-        const res = await api.getAllUsers(searchUsername, searchTrueID, searchSchool, newPage)
+        const res = await api.getAllUsers(domainID, searchUsername, searchTrueID, searchSchool, newPage)
         if (res.success) {
             const { pageNum, users } = res.data;
             setSearchUsers(users);
@@ -32,6 +33,7 @@ const AddUserModal = ({ onClose }) => {
         return false;
     }
     const handleFilter = async () => {
+        setCurPage(1);
         const success = handleSearchUsers(1);
         if (success) {
             Toast("查询成功");
@@ -44,7 +46,14 @@ const AddUserModal = ({ onClose }) => {
         const u = searchUsers[idx];
         api.addUser2Domain(domainID, u.id).then(res => {
             if (res.success) {
-
+                const { roleID } = res.data;
+                Toast("添加用户成功", 'success');
+                setSearchUsers(prev => {
+                    const newUsers = [...prev];
+                    newUsers[idx] = { ...newUsers[idx], inDomain: true };
+                    return newUsers;
+                });
+                onAdd({ userID: u.id, username: u.username, trueID: u.trueID, roleID: roleID })
             }
         })
     }
@@ -63,9 +72,9 @@ const AddUserModal = ({ onClose }) => {
                     <span>学校</span>
                     <Input value={searchSchool} onChange={setSearchSchool} />
                 </div>
-                <div>
+                <div className="flex gap-4">
                     <Button onClick={handleFilter} type="primary">查询</Button>
-                    <Button onClick={() => { setSearchUsername(""); setSearchSchool(""); setSearchTrueID("") }} type="default" >重置</Button>
+                    <Button onClick={() => { setSearchUsername(""); setSearchSchool(""); setSearchTrueID(""); Toast("重置成功") }} type="default" >重置</Button>
                 </div>
             </div>
             <table className="w-full">
@@ -88,7 +97,7 @@ const AddUserModal = ({ onClose }) => {
                             <td className="p-1 text-center">{gender2text(user.gender)}</td>
                             <td className="p-1 text-center">{user.email}</td>
                             <td className="p-1 text-center">
-                                <Button onClick={handleAddUser.bind(null, idx)}>加入</Button>
+                                {!user.inDomain && <Button type="primary" onClick={handleAddUser.bind(null, idx)}>加入</Button>}
                             </td>
                         </tr>
                     ))}
@@ -137,7 +146,7 @@ const UserManage = ({ }) => {
     const handleSelect = (idx) => {
         const selected = selectedIdx.includes(idx)
         if (selected) {
-            setSelectedIdx(prev => prev.filter(item => item != idx));
+            setSelectedIdx(prev => prev.filter(item => item !== idx));
         } else {
             setSelectedIdx(prev => [...prev, idx]);
         }
@@ -164,16 +173,20 @@ const UserManage = ({ }) => {
         if (selectedIdx.length === 0) {
             return;
         }
-        const userIDs = selectedIdx.map(idx => users[idx].userID);
-        const res = await api.removeUsers(domainID, userIDs);
-        if (res.success) {
-            alert("删除成功");
-            setUsers(users.filter((_, idx) => !selectedIdx.includes(idx)));
-            setSelectedIdx([]);
-        }
+        Alert("确认删除选中的用户?", <></>, async () => {
+            const userIDs = selectedIdx.map(idx => users[idx].userID);
+            const res = await api.removeUsers(domainID, userIDs);
+            if (res.success) {
+                Toast("删除成功");
+                setUsers(users.filter((_, idx) => !selectedIdx.includes(idx)));
+                setSelectedIdx([]);
+            }
+        }, true)
+
     }
 
     const handleFilter = async () => {
+        setCurPage(1);
         const res = await handleGetUsers(1);
         if (res) {
             Toast("查询成功", "success")
@@ -184,7 +197,7 @@ const UserManage = ({ }) => {
     return (
         <Card className="animate__slideInBottom">
             {
-                showUserSelectModal && <AddUserModal onClose={setShowUserSelectModal.bind(null, false)} />
+                showUserSelectModal && <AddUserModal onAdd={(user) => { setUsers(prev => [user, ...prev]) }} onClose={setShowUserSelectModal.bind(null, false)} />
             }
             {selectedIdx.length === 0 &&
                 <Button className="mb-3" onClick={setShowUserSelectModal.bind(null, true)} type="primary">添加用户</Button>
@@ -195,8 +208,8 @@ const UserManage = ({ }) => {
                         <button onClick={handleRemoveUsers} className={`text-white border p-1 bg-red-400 hover:bg-red-500`}>移除所选用户</button>
                     </div>
                     <div className="flex items-center">
-                        <div >修改所选用户角色为</div>
-                        {roles.length > 0 && <Select entries={roles.map(r => [r.name, r.id])}
+                        <div>修改所选用户角色为</div>
+                        {roles.length > 0 && <Select entries={roles.filter(r => r.name !== "owner").map(r => [r.name, r.id])}
                             onChange={(newRoleID) => { const roleID = parseInt(newRoleID); handleChangeRole(selectedIdx, roleID) }}
                             selectedValue={null} >
                         </Select>}
