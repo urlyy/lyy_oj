@@ -11,11 +11,11 @@ import Alert from "@/utils/alert";
 
 const Item = ({ value, onChange, onRemove }) => {
     return (
-        <div className="flex">
-            <div>
+        <div className="flex gap-1">
+            <div className="flex-1">
                 <Input value={value} onChange={onChange} />
             </div>
-            <button onClick={onRemove} className="text-red-400 hover:text-red-500">移除</button>
+            <Button onClick={onRemove} type="danger" >移除</Button>
         </div>
     )
 }
@@ -76,17 +76,39 @@ const ConfigManage = () => {
     return (
         <Card className="animate__slideInBottom">
             <div className="flex flex-col gap-4">
-                <Card title="编译器列表修改" rightHeader={<button onClick={() => { setTmpCompilers(prev => [...prev, ""]) }} className="text-blue-400 hover:text-blue-500">新增</button>}>
-                    <div className="grid grid-cols-3">
-                        {tmpCompilers.map((c, idx) => <Item value={c} onChange={(val) => {
-                            setTmpCompilers(prev => {
-                                const newCompilers = [...prev];
-                                newCompilers[idx] = val;
-                                return newCompilers
-                            })
-                        }} onRemove={() => { setTmpCompilers(prev => prev.filter((_, i) => i !== idx)) }} />)}
-
-                    </div>
+                <Card title="编译器列表修改" rightHeader={<button onClick={() => { setTmpCompilers(prev => [...prev, ["", ""]]) }} className="text-blue-400 hover:text-blue-500">新增</button>}>
+                    {tmpCompilers.map((c, idx) =>
+                        <div key={idx} className="flex items-end gap-1">
+                            <div className="flex-1">
+                                <div>编译器名称</div>
+                                <Input value={c[0]} onChange={(val) => {
+                                    setTmpCompilers(prev => {
+                                        const newCompilers = [...prev];
+                                        const tmp = newCompilers[idx]
+                                        newCompilers[idx] = [val, tmp[1]];
+                                        return newCompilers
+                                    })
+                                }} />
+                            </div>
+                            <div className="flex-1">
+                                <div>编译器容器标签</div>
+                                <Input value={c[1]} onChange={(val) => {
+                                    setTmpCompilers(prev => {
+                                        const newCompilers = [...prev];
+                                        const tmp = newCompilers[idx]
+                                        newCompilers[idx] = [tmp[0], val];
+                                        return newCompilers
+                                    })
+                                }} />
+                            </div>
+                            <Button type="danger" onClick={() => {
+                                setTmpCompilers(prev => {
+                                    const res = prev.filter((_, i) => i !== idx);
+                                    return res;
+                                })
+                            }}>移除</Button>
+                        </div>
+                    )}
                 </Card>
                 <Card title="判题机列表修改" rightHeader={<button onClick={() => { setTmpAddressList(prev => [...prev, ""]) }} className="text-blue-400 hover:text-blue-500">新增</button>}>
                     <div className="grid grid-cols-3 gap-y-3">

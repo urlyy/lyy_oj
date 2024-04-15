@@ -215,7 +215,7 @@ const EditorArea = ({ problemID, situationID, situationType, endTime, valid }) =
             <div className="w-full h-3/4">
                 <div className="w-full h-full flex flex-col">
                     <div className="flex gap-4 p-1 border bg-white items-center">
-                        <label>选择语言<Select entries={langs.map(la => [la, la])} onChange={setLang} selectedValue={lang} className={`w-24 ml-1`}></Select></label>
+                        <label>选择语言<Select entries={langs.map(la => [la[0], la[1]])} onChange={setLang} selectedValue={lang} className={`w-24 ml-1`}></Select></label>
                         {valid ? <>
                             <Button type="primary" onClick={handleTest}>自测</Button>
                             <Button type="success" onClick={handleJudge}>提交</Button>

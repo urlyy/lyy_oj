@@ -38,7 +38,7 @@ const Filter = ({ onFilter, username, onUsernameChange, problemTitle, onProblemT
                 </label>
                 <label className="flex-1">
                     <div>按编译器</div>
-                    <Select selectedValue={compiler} onChange={onCompilerChange} entries={[["全部", ""], ...compilers.map(c => [c, c])]} className={`w-full`} />
+                    <Select selectedValue={compiler} onChange={onCompilerChange} entries={[["全部", ""], ...compilers.map(c => [c[0], c[1]])]} className={`w-full`} />
                 </label>
                 <label className="flex-1">
                     <div>按状态</div>
