@@ -44,20 +44,12 @@ const api = {
         const res = await request.postParam(`domain/${domainID}/role/${roleID}/permission/${bit}/${havePermission}`);
         return res;
     },
-    getAllUsers: async (domainID, username = "", trueID = "", school = "", curPage) => {
-        const res = await request.get(`/user/list`, { page: curPage, username, trueID, school, d: domainID });
-        return res;
-    },
+
     addUser2Domain: async (domainID, userID) => {
         const res = await request.postBody(`/domain/${domainID}/user/${userID}`);
         return res;
     },
-    sendNotification: async (domainID, msg) => {
-        const form = new FormData();
-        form.append("msg", msg);
-        const res = await request.postForm(`/sse/${domainID}/notify`, form);
-        return res;
-    }
+
 
 }
 export default api;

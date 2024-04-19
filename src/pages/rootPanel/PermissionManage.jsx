@@ -34,6 +34,7 @@ const PermissionManage = ({ }) => {
         { name: "作业", permissions: ["创建作业", "修改作业", "查看未公开作业",] },
         { name: "比赛", permissions: ["创建比赛", "修改比赛", "查看未公开比赛",] },
         { name: "讨论", permissions: ["创建讨论", "修改自己的讨论", "删除其他人的讨论", "删除其他人的评论"] },
+        { name: "通知", permissions: ["创建通知", "删除通知"] },
     ]);
 
     const handleChange = async (event, groupIdx, perIdx, roleIdx) => {

@@ -60,7 +60,7 @@ const Problems = () => {
     const handleGetProblems = async (newPage) => {
         setCurPage(newPage);
         const flag = havePermission(permission, 查看未公开题目);
-        const res = await api.list(domainID, newPage, keyword, diff, flag)
+        const res = await api.list(domainID, newPage, keyword, diff, flag);
         if (res.success) {
             const { problems: newProblems, pageNum } = res.data;
             setProblems(newProblems);

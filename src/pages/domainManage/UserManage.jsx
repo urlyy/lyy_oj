@@ -11,101 +11,41 @@ import { gender2text } from "@/utils/data2text";
 import Pagination from "@/components/Pagination";
 import Toast from "@/utils/toast";
 import Alert from "@/utils/alert";
+import SelectUserModal from "@/components/SelectUserModal"
 
-const AddUserModal = ({ onClose, onAdd }) => {
-    const [curPage, setCurPage] = useState(1);
-    const [pageNum, setPageNum] = useState(1);
-    const [searchUsername, setSearchUsername] = useState("");
-    const [searchTrueID, setSearchTrueID] = useState("");
-    const [searchSchool, setSearchSchool] = useState("");
-    const [searchUsers, setSearchUsers] = useState([]);
+
+
+
+
+const AddUserModal = ({ onClose, setUsers }) => {
     const { id: domainID } = domainStore();
+    const AddButton = ({ user, idx, setInnerUsers, status }) => {
+        const handleAddUser = (u, idx, setInnerUsers) => {
+            api.addUser2Domain(domainID, u.id).then(res => {
+                if (res.success) {
+                    const { roleID } = res.data;
+                    Toast("添加用户成功", 'success');
+                    setInnerUsers(prev => {
+                        const newUsers = [...prev];
+                        newUsers[idx] = { ...newUsers[idx], inDomain: true };
+                        return newUsers;
+                    });
+                    setUsers(prev => [{ userID: u.id, username: u.username, trueID: u.trueID, roleID: roleID }, ...prev])
+                }
+            })
+        }
+        if (status === true) {
+            return <Button type="primary" onClick={handleAddUser.bind(null, user, idx, setInnerUsers)}>加入</Button>
+        } else {
+            return <></>
+        }
+    }
 
-    const handleSearchUsers = async (newPage) => {
-        setCurPage(newPage);
-        const res = await api.getAllUsers(domainID, searchUsername, searchTrueID, searchSchool, newPage)
-        if (res.success) {
-            const { pageNum, users } = res.data;
-            setSearchUsers(users);
-            setPageNum(pageNum);
-            return true;
-        }
-        return false;
+    const addButtonStatus = (user, idx) => {
+        return !user.inDomain;
     }
-    const handleFilter = async () => {
-        setCurPage(1);
-        const success = handleSearchUsers(1);
-        if (success) {
-            Toast("查询成功");
-        }
-    }
-    useEffect(() => {
-        handleSearchUsers(1);
-    }, [])
-    const handleAddUser = (idx) => {
-        const u = searchUsers[idx];
-        api.addUser2Domain(domainID, u.id).then(res => {
-            if (res.success) {
-                const { roleID } = res.data;
-                Toast("添加用户成功", 'success');
-                setSearchUsers(prev => {
-                    const newUsers = [...prev];
-                    newUsers[idx] = { ...newUsers[idx], inDomain: true };
-                    return newUsers;
-                });
-                onAdd({ userID: u.id, username: u.username, trueID: u.trueID, roleID: roleID })
-            }
-        })
-    }
-    return (
-        <Modal onClose={onClose}>
-            <div className="flex gap-1 items-end mb-2">
-                <div>
-                    <span>用户名</span>
-                    <Input value={searchUsername} onChange={setSearchUsername} />
-                </div>
-                <div>
-                    <span>学号/工号</span>
-                    <Input value={searchTrueID} onChange={setSearchTrueID} />
-                </div>
-                <div>
-                    <span>学校</span>
-                    <Input value={searchSchool} onChange={setSearchSchool} />
-                </div>
-                <div className="flex gap-4">
-                    <Button onClick={handleFilter} type="primary">查询</Button>
-                    <Button onClick={() => { setSearchUsername(""); setSearchSchool(""); setSearchTrueID(""); Toast("重置成功") }} type="default" >重置</Button>
-                </div>
-            </div>
-            <table className="w-full">
-                <thead>
-                    <tr className="border">
-                        <th className="p-1">学号/工号</th>
-                        <th className="p-1 text-center">用户名</th>
-                        <th className="p-1 text-center">学校</th>
-                        <th className="p-1 text-center">性别</th>
-                        <th className="p-1 text-center">邮箱</th>
-                        <th className="p-1 text-center">操作</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {searchUsers.map((user, idx) => (
-                        <tr key={idx} className="border">
-                            <td className="p-1">{user.trueID}</td>
-                            <td className="p-1">{user.username}</td>
-                            <td className="p-1 text-center">{user.school}</td>
-                            <td className="p-1 text-center">{gender2text(user.gender)}</td>
-                            <td className="p-1 text-center">{user.email}</td>
-                            <td className="p-1 text-center">
-                                {!user.inDomain && <Button type="primary" onClick={handleAddUser.bind(null, idx)}>加入</Button>}
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-            <Pagination current={curPage} pageNum={pageNum} onChange={(page) => { handleSearchUsers(page) }} />
-        </Modal>
-    )
+
+    return <SelectUserModal onClose={onClose} buttons={[AddButton]} getButtonsStatus={[addButtonStatus]} />
 }
 
 
@@ -197,7 +137,7 @@ const UserManage = ({ }) => {
     return (
         <Card className="animate__slideInBottom">
             {
-                showUserSelectModal && <AddUserModal onAdd={(user) => { setUsers(prev => [user, ...prev]) }} onClose={setShowUserSelectModal.bind(null, false)} />
+                showUserSelectModal && <AddUserModal setUsers={setUsers} onClose={setShowUserSelectModal.bind(null, false)} />
             }
             {selectedIdx.length === 0 &&
                 <Button className="mb-3" onClick={setShowUserSelectModal.bind(null, true)} type="primary">添加用户</Button>

@@ -3,6 +3,7 @@ import request from "@/utils/request";
 const api = {
     list: async (domainID, page = 1, keyword = "", diff = 0, flag) => {
         const res = await request.get(`/problem/list`, { d: domainID, page: page, keyword, diff, flag });
+        console.log(res);
         return res;
     },
     get: async (domainID, problemID, isEdit) => {

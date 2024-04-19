@@ -20,6 +20,11 @@ const Header = ({ children }) => {
     )
 }
 
+const specialTemplate = `def judge(lines)->bool:  
+    for line in lines:
+        pass
+    return True`
+
 const ProblemEdit = () => {
     const navigate = useNavigate();
     const { id: domainID } = domainStore();
@@ -36,7 +41,6 @@ const ProblemEdit = () => {
     const [testCases, setTestCases] = useState([]);
     const [judgeType, setJudgeType] = useState(0);
     const [specialCode, setSpecialCode] = useState("");
-
 
     useEffect(() => {
         if (problemID !== null) {
@@ -98,6 +102,10 @@ const ProblemEdit = () => {
             Alert("时空限制必须是数字");
             return;
         }
+        if (parseInt(memoryLimit) > 256) {
+            Alert("内存限制必须不大于256MB");
+            return;
+        }
         const res = await api.add(domainID, {
             problemID: problemID ? parseInt(problemID) : problemID,
             title,
@@ -115,6 +123,7 @@ const ProblemEdit = () => {
         });
         if (res.success) {
             navigate("/problems");
+            Toast("保存题目成功", "success");
         } else {
             Alert(res.msg);
         }
@@ -128,6 +137,18 @@ const ProblemEdit = () => {
                 navigate("/problems")
             }
         }, true)
+    }
+
+    const handleChangeJudgeType = (type) => {
+        if (type === 0) {
+            Alert("操作提示", <>切换为普通判题将删除原先的special判题代码,<br />确定切换吗?</>, async () => {
+                setJudgeType(0);
+                setSpecialCode("");
+            }, true)
+        } else if (type === 1) {
+            setSpecialCode(specialTemplate);
+            setJudgeType(1);
+        }
     }
 
     return (
@@ -183,17 +204,15 @@ const ProblemEdit = () => {
                         <Header>输出格式</Header>
                         <RichTextEditor onChange={setOutputFormat} value={outputFormat} />
                     </div>
-
-
                     <div className="flex flex-col">
                         <Header>测试用例
-                            {judgeType === 0 && <Button type="primary" onClick={setJudgeType.bind(null, 1)}>改为special judge</Button>}
-                            {judgeType === 1 && <Button type="primary" onClick={setJudgeType.bind(null, 0)}>改为普通judge</Button>}
+                            {judgeType === 0 && <Button type="primary" onClick={handleChangeJudgeType.bind(null, 1)}>改为special judge</Button>}
+                            {judgeType === 1 && <Button type="primary" onClick={handleChangeJudgeType.bind(null, 0)}>改为普通judge</Button>}
                         </Header>
                         {judgeType === 1 &&
                             <>
                                 <Header>Special 判题代码(Python)</Header>
-                                <CodeEditor readonly={false} code={specialCode} onChange={setSpecialCode} />
+                                <CodeEditor placeholder={specialTemplate} readonly={false} code={specialCode} onChange={setSpecialCode} />
                             </>
                         }
                         {testCases.map((testCase, idx) => (
@@ -204,15 +223,15 @@ const ProblemEdit = () => {
                                             <span className="text-lg">Input#{idx + 1}</span>
                                             {testCase.isSample === true && <span className="bg-green-400 text-white p-1 rounded-sm">样例</span>}
                                         </div>
-                                        <Textarea onChange={(val) => handleTestCaseChange(idx, "input", val)} value={testCase.input} />
+                                        <Textarea scroll={false} onChange={(val) => handleTestCaseChange(idx, "input", val)} value={testCase.input} />
                                     </label>
-                                    <label className="flex-1">
+                                    {judgeType !== 1 && <label className="flex-1">
                                         <div>
                                             <span className="text-lg">Output#{idx + 1}</span>
                                             {testCase.isSample === true && <span className="bg-green-400 text-white p-1 rounded-sm">样例</span>}
                                         </div>
-                                        <Textarea onChange={(val) => handleTestCaseChange(idx, "expect", val)} value={testCase.expect} />
-                                    </label>
+                                        <Textarea scroll={false} onChange={(val) => handleTestCaseChange(idx, "expect", val)} value={testCase.expect} />
+                                    </label>}
                                     <div className="flex p-1 gap-2">
                                         {testCase.isSample ?
                                             <Button className="h-full" onClick={handleSetSample.bind(null, idx, false)}>撤下样例</Button>

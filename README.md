@@ -7,7 +7,11 @@
 - 根据excel导入用户,此时不以@xx.com结尾，但是修改时必须要求
 - 将列数未知的grid改成table
 - 富文本的空内容判定 <p></p>，需要用getText
-
+- 区分前端看到的lang和后端看到的compiler
+- 修改操作的日志和重判题目的时间显示
+- 题目编辑界面的滚动条
+- 作弊檢測:  npm install "ml5": "^0.12.2", "p5": "^1.9.0"
+- 滚动条和超长文本
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

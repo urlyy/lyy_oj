@@ -112,7 +112,7 @@ const ProblemDetail = ({ onExpand, expand, situationID, situationType, onValidCh
             <div className="flex gap-2">
                 <Tag>ID:{problemID}</Tag>
                 <Tag>时间限制:{timeLimit2text(timeLimit)}</Tag>
-                <Tag>内存限制:{memoryLimit / 1024}mb</Tag>
+                <Tag>内存限制:{memoryLimit}mb</Tag>
                 {diff !== 0 && <Tag>{diff2text(diff)}</Tag>}
                 {judgeType === 1 && <Tag type="danger">Special</Tag>}
                 {!valid && <Tag type="danger">无测试数据</Tag>}
@@ -162,6 +162,7 @@ const EditorArea = ({ problemID, situationID, situationType, endTime, valid }) =
     const [testInput, setTestInput] = useState("");
     const [testOutput, setTestOutput] = useState("");
     const [expected, setExpected] = useState("");
+    const [allowSubmit, setAllowSubmit] = useState(true);
 
     const { id: domainID } = domainStore();
     useEffect(() => {
@@ -191,6 +192,7 @@ const EditorArea = ({ problemID, situationID, situationType, endTime, valid }) =
             return;
         }
         Alert("提交成功");
+        setAllowSubmit(false);
         const res = await api.submitJudge(domainID, problemID, lang, code, situationType, parseInt(situationID));
         if (res.success) {
             const result = res.data.result;
@@ -203,22 +205,45 @@ const EditorArea = ({ problemID, situationID, situationType, endTime, valid }) =
             Alert("代码、测试输入、编译器不能为空");
             return;
         }
+        setAllowSubmit(false);
         const res = await api.submitTest(domainID, problemID, code, lang, testInput);
         if (res.success) {
             const result = res.data.result;
-            setTestOutput(result.output);
-            Toast("获取测试输出成功", "success");
+            if (result.status === 0) {
+                Toast("获取测试输出成功", "success");
+                setTestOutput(result.output);
+            } else {
+                const txt = status2text(result.status, result.passPercent);
+                Toast(txt, "error", false);
+                setTestOutput(txt);
+
+            }
         }
     }
+
+    useEffect(() => {
+        if (allowSubmit === false) {
+            setTimeout(() => {
+                setAllowSubmit(true);
+            }, 3000)
+        }
+    }, [allowSubmit])
+
     return (
         <>
             <div className="w-full h-3/4">
                 <div className="w-full h-full flex flex-col">
                     <div className="flex gap-4 p-1 border bg-white items-center">
-                        <label>选择语言<Select entries={langs.map(la => [la[0], la[1]])} onChange={setLang} selectedValue={lang} className={`w-24 ml-1`}></Select></label>
+                        <label className="flex items-center">
+                            选择语言
+                            <div>
+                                <Select entries={langs.map(la => [la[0], la[1]])} onChange={setLang} selectedValue={lang} className={`w-24 ml-1`}></Select>
+                            </div>
+                        </label>
                         {valid ? <>
-                            <Button type="primary" onClick={handleTest}>自测</Button>
-                            <Button type="success" onClick={handleJudge}>提交</Button>
+                            <Button disabled={!allowSubmit} type="primary" onClick={handleTest}>自测</Button>
+                            <Button disabled={!allowSubmit} type="success" onClick={handleJudge}>提交</Button>
+                            {!allowSubmit && <div className="text-blue-400">正在限制频繁提交中</div>}
                         </> :
                             <Button type="danger">无法提交</Button>
                         }

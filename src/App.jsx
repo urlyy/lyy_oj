@@ -34,6 +34,7 @@ import ProblemEdit from "./pages/problem/ProblemEdit";
 import DiscussionEdit from "./pages/discussion/DiscussionEdit";
 import DomainManage from "./pages/domainManage/DomainMange";
 import Notification from "./components/Notification";
+import NotificationPage from "./pages/notification/Notification";
 
 import api from './api'
 
@@ -151,6 +152,10 @@ const App = () => {
       path: "root",
       element: <RootPanel />
     },
+    {
+      path: "notification",
+      element: <NotificationPage />
+    }
   ]);
   //未登录
   if (token == null) {

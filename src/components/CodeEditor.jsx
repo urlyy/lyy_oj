@@ -4,7 +4,7 @@ import { useRef, useEffect, useState } from 'react';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 
 
-const CodeEditor = ({ code, readonly = true, onChange, className = "text-lg" }) => {
+const CodeEditor = ({ code, readonly = true, onChange, className = "text-lg", placeholder = "" }) => {
     const editor = useRef();
     // const extensions = [langs.java(), langs.cpp(), langs.python()];
     const extensions = [langs.cpp()];
@@ -18,10 +18,7 @@ const CodeEditor = ({ code, readonly = true, onChange, className = "text-lg" }) 
         onChange: (val) => { onChange(val); },
         placeholder: "在这里写入代码",
         editable: !readonly,
-        placeholder: `def judge(lines)->bool:  
-    for line in lines:
-        pass
-    return True  `
+        placeholder: placeholder,
     });
 
     useEffect(() => {

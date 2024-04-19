@@ -1,6 +1,6 @@
 import { toast } from 'react-toastify';
 
-const Toast = (message, type = "info", position = "top-center", autoClose = true, className = "") => {
+const Toast = (message, type = "info", autoClose = true, position = "top-center", className = "") => {
     if (!["info", "success", "error", "warning"].includes(type)) {
         throw new Error("toast type must be one of 'info','success','error','warning'");
     }

@@ -74,6 +74,7 @@ const Nav = () => {
                 ['排名', handleNavigate.bind(null, `/rank`)],
                 ['判题记录', handleNavigate.bind(null, `/submissions`)],
                 ['讨论', handleNavigate.bind(null, '/discussions')],
+                ['通知', handleNavigate.bind(null, '/notification')],
             ]
             if (ownerID === userID) {
                 items.push(['管理当前域', handleNavigate.bind(null, '/admin')])

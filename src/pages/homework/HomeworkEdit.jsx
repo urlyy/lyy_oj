@@ -1,16 +1,11 @@
 import Input from "@/components/Input";
 import Select from "@/components/Select";
-import Textarea from "@/components/Textarea";
 import RichTextEditor from "@/components/RichTextEditor";
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import api from "./api";
 import domainStore from "@/store/domain";
 import { str2date, str2time } from "@/utils/data2text";
-import Modal from "@/components/Modal";
-import ProblemTable from "@/components/ProblemTable";
-import Pagination from "@/components/Pagination";
-import Card from "@/components/Card";
 import Alert from "@/utils/alert";
 import Toast from "@/utils/toast";
 import Button from "@/components/Button";

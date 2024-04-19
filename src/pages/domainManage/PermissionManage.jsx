@@ -25,8 +25,6 @@ const PermissionManage = ({ }) => {
         })
     }, [])
 
-
-
     const groups = ([
         {
             name: "题库", permissions: ["创建题目", "递交题目", "修改题目", "查看未公开题目"]
@@ -35,6 +33,7 @@ const PermissionManage = ({ }) => {
         { name: "作业", permissions: ["创建作业", "修改作业", "查看未公开作业",] },
         { name: "比赛", permissions: ["创建比赛", "修改比赛", "查看未公开比赛",] },
         { name: "讨论", permissions: ["创建讨论", "修改自己的讨论", "删除其他人的讨论", "删除其他人的评论"] },
+        { name: "通知", permissions: ["创建通知", "删除通知"] },
     ]);
 
     const handleChange = async (event, groupIdx, perIdx, roleIdx) => {
@@ -67,8 +66,8 @@ const PermissionManage = ({ }) => {
                 <tbody>
                     {groups.map((group, groupIdx) => (
                         <>
-                            <tr>
-                                <td colSpan={roles.length + 1} key={`g-${groupIdx}`} className={` items-center border-b text-xl  p-1 bg-sky-400 text-white`}>
+                            <tr key={`g-${groupIdx}`}>
+                                <td colSpan={roles.length + 1} className={` items-center border-b text-xl  p-1 bg-sky-400 text-white`}>
                                     {group.name}
                                 </td>
                             </tr>

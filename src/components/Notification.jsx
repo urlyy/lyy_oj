@@ -3,16 +3,9 @@ import userStore from "@/store/user";
 import { useEffect } from "react";
 import { EventSourcePolyfill } from 'event-source-polyfill';
 import Toast from "../utils/toast";
-import { dateFormat } from "@/utils/data2text";
 
-const Msg = ({ text, sendTime }) => {
-    return (
-        <div >
-            <div className="text-lg">{text}</div>
-            <div>{dateFormat(sendTime)}</div>
-        </div>
-    )
-}
+import Msg from "./NotificationMsg";
+
 
 const Notification = () => {
     const { id: domainID } = domainStore();
@@ -23,8 +16,8 @@ const Notification = () => {
             headers: { Authorization: token }
         });
         eventSource.onmessage = (event) => {
-            const { text, sendTime } = JSON.parse(event.data);
-            Toast(<Msg text={text} sendTime={sendTime} />, "error", "top-left", false);
+            const { title, content, sendTime } = JSON.parse(event.data);
+            Toast(<Msg content={content} title={title} sendTime={sendTime} />, "error", false, "top-left");
 
         };
         eventSource.onerror = (event) => {

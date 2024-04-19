@@ -3,10 +3,8 @@ import Input from "./Input";
 
 import Button from "./Button";
 import Draggable from 'react-draggable'
-import { DataSet } from "vis-data";
 import { Network, parseDOTNetwork } from 'vis-network';
 import { useRef, useState, useEffect } from "react";
-import Textarea from "./Textarea";
 import CodeEditor from "./CodeEditor";
 import copy from 'copy-to-clipboard';
 import Toast from "@/utils/toast";
@@ -174,7 +172,7 @@ const Toy = () => {
     const [networkCode, setNetworkCode] = useState(`dinetwork {
     1 -> 1 -> 2->7;
     2 -> 3; 
-    2 -- 4; 
+    2 -- 4[label="4"]; 
     2 -> Q[label=weight]; 
 }`)
     const [draggable, setDraggable] = useState(true);
@@ -190,7 +188,7 @@ const Toy = () => {
                                     <button className={`${type === t ? "bg-blue-400 text-white" : "bg-white"} text-sm border p-1 `} key={idx} onClick={setType.bind(null, t)}>{t}</button>
                                 ))}
                                 <button className="text-sm border p-1 bg-white" onClick={() => { setDraggable(prev => !prev) }}>{draggable ? "固定" : "解除"}</button>
-                                <button className="text-sm border p-1 bg-white" onClick={setVisible.bind(null, false)}>收起</button>
+                                <button className="text-sm border p-1 bg-white" onClick={() => { setDraggable(true); setVisible(false) }}>收起</button>
                             </div>
                             <div className="border p-2">
                                 <Calculator visible={type === "计算器"} />

@@ -14,6 +14,8 @@ export const 创建讨论 = 12
 export const 修改自己的讨论 = 13
 export const 删除其他人的讨论 = 14
 export const 删除其他人的评论 = 15
+export const 创建通知 = 16
+export const 删除通知 = 17
 
 export const havePermission = (permission, bitPosition) => {
     return (permission & (1 << bitPosition)) !== 0;

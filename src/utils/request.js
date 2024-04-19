@@ -33,7 +33,6 @@ instance.interceptors.response.use(
             Toast(data.msg, "error");
             if (data.msg === "请重新登录!") {
                 Alert("登录凭证已过期,请保存当前正编写的代码,并手动重新登录!");
-                return;
             }
         }
         return data;

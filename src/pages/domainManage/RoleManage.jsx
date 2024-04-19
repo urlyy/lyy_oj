@@ -88,9 +88,9 @@ const RoleManage = ({ }) => {
             <table className="w-full">
                 <thead>
                     <tr className="border">
-                        <td className="text-center">角色名</td>
-                        <td className=" text-center">描述</td>
-                        <td className="text-center">操作</td>
+                        <th className="text-center">角色名</th>
+                        <th className=" text-center">描述</th>
+                        <th className="text-center">操作</th>
                     </tr>
                 </thead>
                 <tbody>
