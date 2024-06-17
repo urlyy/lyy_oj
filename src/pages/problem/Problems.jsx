@@ -1,6 +1,6 @@
 import ProblemTable from "@/components/ProblemTable"
 import Pagination from "@/components/Pagination";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Input from "@/components/Input";
 import Select from "@/components/Select";
 import Card from "@/components/Card";
@@ -10,7 +10,6 @@ import domainStore from "@/store/domain";
 import { diff2text } from "@/utils/data2text";
 import Toast from "@/utils/toast";
 import { havePermission, 查看未公开题目, 创建题目 } from "@/utils/permission";
-
 
 
 const Filter = ({ onFilter, keyword, onKeywordChange, diff, onDiffChange }) => {
@@ -54,15 +53,21 @@ const Problems = () => {
     const [pageNum, setPageNum] = useState(1);
     const [keyword, setKeyword] = useState("");
     const [diff, setDiff] = useState(0);
+    const inited = useRef(false);
+    const listRef = useRef(null);
     const { permission } = domainStore();
 
     const { id: domainID } = domainStore();
     const handleGetProblems = async (newPage) => {
         setCurPage(newPage);
+        listRef.current.classList.remove("animate__slideInBottom")
         const flag = havePermission(permission, 查看未公开题目);
         const res = await api.list(domainID, newPage, keyword, diff, flag);
         if (res.success) {
             const { problems: newProblems, pageNum } = res.data;
+            if (inited.current) {
+                listRef.current.classList.add("animate__slideInBottom")
+            }
             setProblems(newProblems);
             setPageNum(pageNum);
             return true;
@@ -70,7 +75,7 @@ const Problems = () => {
         return false;
     }
     useEffect(() => {
-        handleGetProblems(1);
+        handleGetProblems(1).then(res => inited.current = true);;
     }, [])
     const handleFilter = async () => {
         setCurPage(1);
@@ -81,7 +86,7 @@ const Problems = () => {
         <div className="bg-white flex h-full w-3/5 justify-center animate__slideInBottom">
             <div className="h-full w-full flex flex-col">
                 <Filter onFilter={handleFilter} keyword={keyword} diff={diff} onDiffChange={setDiff} onKeywordChange={setKeyword} />
-                <ProblemTable data={problems} />
+                <ProblemTable tableRef={listRef} data={problems} />
                 <Pagination onChange={(newPage) => { handleGetProblems(newPage) }} current={curPage} pageNum={pageNum} />
             </div >
         </div>

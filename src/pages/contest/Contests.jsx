@@ -6,11 +6,17 @@ import api from './api'
 import domainStore from "@/store/domain";
 import { havePermission, 创建比赛, 查看未公开比赛 } from "@/utils/permission";
 
+
+
 const ContestList = ({ data = [], onClick, listRef }) => {
     const navigate = useNavigate();
+    const { permission } = domainStore();
+
     const compareTime = (startTime, endTime) => {
         const start = new Date(startTime);
+        start.setUTCHours(start.getUTCHours() + start.getTimezoneOffset() / 60);
         const end = new Date(endTime);
+        end.setUTCHours(end.getUTCHours() + end.getTimezoneOffset() / 60);
         const now = new Date();
         if (now < start) {
             return -1;
@@ -22,6 +28,8 @@ const ContestList = ({ data = [], onClick, listRef }) => {
     }
     const statusBgColor = (startTime, endTime) => {
         const res = compareTime(startTime, endTime);
+
+        // console.log(startTime, res);
         if (res === -1) {
             return "bg-slate-300 hover:bg-slate-400";
         } else if (res === 0) {
@@ -63,7 +71,7 @@ const ContestList = ({ data = [], onClick, listRef }) => {
     return (
         <div ref={listRef}>
             {data.map((contest, idx) => (
-                <div key={idx} onClick={onClick.bind(null, contest.id)} className={`${compareTime(contest.startTime, contest.endTime) === -1 ? " cursor-not-allowed pointer-events-none" : ""} hover:bg-slate-100 cursor-pointer flex items-center h-24 gap-2 border-b border-b-slate-200`}>
+                <div key={idx} onClick={onClick.bind(null, contest.id)} className={` ${!havePermission(permission, 查看未公开比赛) && compareTime(contest.startTime, contest.endTime) === -1 ? " cursor-not-allowed pointer-events-none" : ""} hover:bg-slate-100 cursor-pointer flex items-center h-24 gap-2 border-b border-b-slate-200`}>
                     <div className={`${statusBgColor(contest.startTime, contest.endTime)} text-white p-1 rounded-lg flex items-center flex-col text-xl font-bold`}>
                         <div>{contest.startTime.substring(0, 10)}</div>
                         <div>{contest.startTime.substring(11, 16)}</div>
@@ -108,6 +116,7 @@ const Contests = () => {
     }
     useEffect(() => {
         handleGetContests(1).then(_ => inited.current = true);
+
     }, [])
     const RightHeader = () => {
         return (

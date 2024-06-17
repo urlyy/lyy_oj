@@ -129,7 +129,9 @@ const RandomGenerator = ({ visible }) => {
                 {!onlyInt && (
                     <div className="flex items-center">
                         <div >保留</div>
-                        <Input className="w-20" type="number" value={floatBit} onChange={setFloatBit} />
+                        <div>
+                            <Input className="w-20" type="number" value={floatBit} onChange={setFloatBit} />
+                        </div>
                         <div>位小数</div>
                     </div>
                 )}

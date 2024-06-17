@@ -38,6 +38,8 @@ const NotificationManage = () => {
         setTitle("");
         if (res.success) {
             Toast("发送通知成功", "success");
+            const { id, title, content, createTime } = res.data;
+            setNotifications(prev => [{ id, title, content, createTime }, ...prev])
         }
     }
     const handleRemove = async (e, idx) => {

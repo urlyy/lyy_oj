@@ -6,24 +6,25 @@ import domainStore from "@/store/domain";
 import api from "./api";
 import Toast from "@/utils/toast";
 import Alert from "@/utils/alert";
+import Button from "@/components/Button";
 
 const DomainProfileManage = () => {
     const { id, name, announce, recommend } = domainStore();
-    const setDomain = domainStore(state => state.set)
-    const [tmpName, setTmpName] = useState(name);
-    const [tmpAnnounce, setTmpAnnounce] = useState(announce);
-    const [tmpRecommend, setTmpRecommend] = useState(recommend);
+    const setDomain = domainStore(state => state.update)
+    const [tmpName, setTmpName] = useState("");
+    const [tmpAnnounce, setTmpAnnounce] = useState("");
+    const [tmpRecommend, setTmpRecommend] = useState("");
     useEffect(() => {
         api.getProfile(id).then(res => {
             if (res.success) {
                 const d = res.data.domain;
-                setDomain(d);
+                setDomain(d.name, d.announce, d.recommend);
                 setTmpName(d.name);
                 setTmpAnnounce(d.announce);
                 setTmpRecommend(d.recommend);
             }
         })
-    }, [])
+    }, [id])
     const handleReset = () => {
         setTmpName(name);
         setTmpAnnounce(announce);
@@ -36,7 +37,7 @@ const DomainProfileManage = () => {
         }
         const res = await api.changeProfile(id, tmpName, tmpAnnounce, tmpRecommend);
         if (res.success) {
-            setDomain({ id: id, name: tmpName, announce: tmpAnnounce, recommend: tmpRecommend, });
+            setDomain(tmpName, tmpAnnounce, tmpRecommend);
             Toast("修改成功");
         }
     }
@@ -53,8 +54,8 @@ const DomainProfileManage = () => {
                     <RichTextEditor value={tmpRecommend} onChange={setTmpRecommend} />
                 </Card>
                 <div className="flex justify-center">
-                    <button onClick={handleReset} className="border border-slate-200 p-2  hover:bg-slate-100 rounded-sm">重置</button>
-                    <button onClick={handleSubmit} className="border border-slate-200 p-2  hover:bg-slate-100 rounded-sm">提交修改</button>
+                    <Button onClick={handleReset} >重置</Button>
+                    <Button onClick={handleSubmit} type="primary">提交修改</Button>
                 </div>
             </div>
         </Card>

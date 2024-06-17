@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { diff2text } from '@/utils/data2text';
 
-const ProblemTable = ({ data = [], situationType, situationID, className = "" }) => {
+const ProblemTable = ({ tableRef, data = [], situationType, situationID, className = "" }) => {
     const navigate = useNavigate();
     const handleClick = (id) => {
         if (situationType) {
@@ -11,7 +11,7 @@ const ProblemTable = ({ data = [], situationType, situationID, className = "" })
         }
     }
     return (
-        <div className={`${className} grid grid-cols-4 border-l border-r border-t`}>
+        <div ref={tableRef} className={`${className} grid grid-cols-4 border-l border-r border-t`}>
             <div className="col-span-4  border-b grid grid-cols-4">
                 <div className="p-1  text-center">编号</div>
                 <div className="p-1  text-center">题目</div>

@@ -45,7 +45,7 @@ const RankTable = ({ data, onChangeData, submissions, problems, users, startTime
             rankData = IOIRank(submissions, problems, users, startTime);
         }
         onChangeData(rankData);
-    }, [submissions]);
+    }, [submissions, problems, users]);
     if (type !== "ACM" && type !== "IOI") {
         console.error("排名类型异常");
         return;

@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Pagination from '@/components/Pagination';
 import PieChart from '@/components/PieChart';
 import userStore from '@/store/user';
@@ -112,7 +112,7 @@ const MiddleRecordsArea = ({ userID }) => {
     return (
         <>
             <div className='flex items-center gap-2'>
-                <div>已通过题目</div>
+                <div>题目搜索</div>
                 <div className='group'>
                     <input value={filterTitle} onChange={(e) => { setFilterTitle(e.target.value) }} placeholder='题目标题' className='rounded-l-sm border-l border-b border-t group-hover:border-blue-300 pl-1 pt-1 pb-1' />
                     <button onClick={handleFilter} className='rounded-r-sm bg-white h-full border-r border-t border-b group-hover:border-blue-300 pr-1 pt-1 pb-1'>搜</button>
@@ -123,8 +123,8 @@ const MiddleRecordsArea = ({ userID }) => {
                 <div className='p-2 border'>题目</div>
                 <div className='p-2 border'>提交次数</div>
                 {records.map((record, idx) => (
-                    <>
-                        <div key={idx} className='col-span-3 grid grid-cols-3'>
+                    <React.Fragment key={idx}>
+                        <div className='col-span-3 grid grid-cols-3'>
                             <div className='p-2 border'>{dateFormat(record.recent)}</div>
                             <div className='p-2 border'>#{record.problemID} {record.problemTitle}</div>
                             <div className='p-2 border flex justify-between'>
@@ -136,7 +136,7 @@ const MiddleRecordsArea = ({ userID }) => {
                                 </div>
                             </div>
                         </div>
-                        {idx === selectedRecordIdx && <table key={`${idx}-table`} className='col-span-3 border mt-1 mb-1'>
+                        {idx === selectedRecordIdx && <table className='col-span-3 border mt-1 mb-1'>
                             <thead>
                                 <tr>
                                     <th className='border'>提交时间</th>
@@ -158,7 +158,7 @@ const MiddleRecordsArea = ({ userID }) => {
                                 ))}
                             </tbody>
                         </table>}
-                    </>
+                    </React.Fragment>
                 ))
                 }
             </div >

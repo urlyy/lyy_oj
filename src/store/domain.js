@@ -26,6 +26,11 @@ const domainStore = create(set => ({
             ownerID: domain.ownerID,
         })
     }),
+    update: (name, announce, recommend) => set(state => {
+        const newDomain = { ...state, name, announce, recommend }
+        localStorage.setItem("domain", JSON.stringify(newDomain));
+        return newDomain;
+    }),
     setName: (newName) => set(prev => ({ ...prev, name: newName })),
     clear: () => set(state => {
         localStorage.removeItem("domain");

@@ -74,7 +74,7 @@ const HomeworkEdit = () => {
             Alert("结束时间不能早于开始时间");
             return;
         }
-        if (endDate === startDate && endTime <= startDate) {
+        if (endDate === startDate && endTime <= startTime) {
             Alert("结束时间不能早于开始时间");
             return;
         }

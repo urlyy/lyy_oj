@@ -9,10 +9,12 @@ import { havePermission, 查看未公开作业, 创建作业 } from "@/utils/per
 
 const HomeworkList = ({ data = [], className = "", listRef }) => {
     const navigate = useNavigate();
-
+    const { permission } = domainStore();
     const compareTime = (startTime, endTime) => {
         const start = new Date(startTime);
+        start.setUTCHours(start.getUTCHours() + start.getTimezoneOffset() / 60);
         const end = new Date(endTime);
+        end.setUTCHours(end.getUTCHours() + end.getTimezoneOffset() / 60);
         const now = new Date();
         if (now < start) {
             return -1;
@@ -26,7 +28,11 @@ const HomeworkList = ({ data = [], className = "", listRef }) => {
     const statusStyle = (startTime, endTime) => {
         const res = compareTime(startTime, endTime);
         if (res === -1) {
-            return "bg-slate-300 hover:bg-slate-400 cursor-not-allowed pointer-events-none";
+            let tmp = "bg-slate-300 hover:bg-slate-400";
+            if (!havePermission(permission, 查看未公开作业)) {
+                tmp += "cursor-not-allowed pointer-events-none";
+            }
+            return tmp
         } else if (res === 0) {
             return "bg-green-300 hover:bg-green-400"
         } else if (res === 1) {

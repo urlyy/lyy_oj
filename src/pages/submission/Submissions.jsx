@@ -118,6 +118,7 @@ const SubmissionTable = ({ data = [], onChange = () => { } }) => {
     const showOptCol = () => {
         return havePermission(permission, 重新判题) && havePermission(permission, 查看提交详情)
     }
+
     return (
         <div className="border-l border-r border-t">
             <table className="w-full">

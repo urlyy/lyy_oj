@@ -35,7 +35,7 @@ const transSubmissions = (submissions, problems, users, startTime) => {
                 if (status === AC) {
                     // const spendTime = new Date(submitTime) - new Date(startTime);
                     // problemRes.acTime = new Date(spendTime).getTime();
-                    problemRes.acTime = new Date(submitTime) - new Date(startTime);
+                    problemRes.acTime = new Date(submitTime) - new Date(startTime) + 8 * 60 * 60 * 1000;
                     // 第一次ac时的耗时+罚时
                     break;
                 } else {
